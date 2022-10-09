@@ -4,12 +4,14 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarViewMonth
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,6 +48,11 @@ fun Home() {
                 modifier = Modifier.fillMaxWidth(),
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /*TODO Move diary screen */ }) {
+                Icon(Icons.Filled.NoteAdd, contentDescription = "Add a diary")
+            }
+        }
     ) {
         AppNavigation(navController = navController)
     }
