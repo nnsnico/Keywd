@@ -33,12 +33,10 @@ fun Home() {
                 destination = currentDestination,
                 onNavigationSelected = { selected ->
                     navController.navigate(selected.route) {
-                        navController.navigate(selected.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
+                        launchSingleTop = true
+                        restoreState = true
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                     }
                 },
@@ -77,5 +75,5 @@ private class HomeNavigationItem(
 
 private val HomeNavigationItems = listOf(
     HomeNavigationItem(screen = Screen.List, icon = Icons.Filled.List),
-    HomeNavigationItem(screen = Screen.Calendar, icon = Icons.Filled.DateRange),
+    HomeNavigationItem(screen = Screen.Calendar, icon = Icons.Filled.CalendarViewMonth),
 )
