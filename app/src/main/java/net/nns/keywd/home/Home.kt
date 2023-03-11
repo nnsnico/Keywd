@@ -27,6 +27,20 @@ import net.nns.keywd.AppNavigation
 import net.nns.keywd.Screen
 import net.nns.keywd.ui.theme.KeywdTheme
 
+internal fun interface NavSelector {
+    fun select(screen: Screen): Unit
+}
+
+private class TabNavigationItem(
+    val screen: Screen,
+    val icon: ImageVector,
+)
+
+private val TabNavigationItems = listOf(
+    TabNavigationItem(screen = Screen.List, icon = Icons.Filled.List),
+    TabNavigationItem(screen = Screen.Calendar, icon = Icons.Filled.CalendarViewMonth),
+)
+
 @Composable
 fun Home() {
     val navController = rememberNavController()
@@ -35,10 +49,10 @@ fun Home() {
 
     Scaffold(
         bottomBar = {
-            HomeBottomNavigation(
+            HomeTabNavigation(
                 destination = currentDestination,
-                onNavigationSelected = { selected ->
-                    navController.navigate(selected.route) {
+                selector = { selectedScreen ->
+                    navController.navigate(selectedScreen.route) {
                         launchSingleTop = true
                         restoreState = true
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -69,31 +83,21 @@ fun HomePreview() {
 }
 
 @Composable
-internal fun HomeBottomNavigation(
+internal fun HomeTabNavigation(
     destination: NavDestination?,
-    onNavigationSelected: (Screen) -> Unit,
+    selector: NavSelector,
     modifier: Modifier,
 ) {
     BottomNavigation(
         modifier = modifier
     ) {
-        HomeNavigationItems.forEach { item ->
+        TabNavigationItems.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = null) },
                 label = { Text(text = item.screen.route) },
                 selected = destination?.hierarchy?.any { it.route == item.screen.route } == true,
-                onClick = { onNavigationSelected(item.screen) }
+                onClick = { selector.select(item.screen) }
             )
         }
     }
 }
-
-private class HomeNavigationItem(
-    val screen: Screen,
-    val icon: ImageVector,
-)
-
-private val HomeNavigationItems = listOf(
-    HomeNavigationItem(screen = Screen.List, icon = Icons.Filled.List),
-    HomeNavigationItem(screen = Screen.Calendar, icon = Icons.Filled.CalendarViewMonth),
-)
