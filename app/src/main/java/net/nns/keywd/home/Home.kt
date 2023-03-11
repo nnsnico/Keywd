@@ -2,6 +2,7 @@ package net.nns.keywd.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.FloatingActionButton
@@ -52,9 +53,9 @@ fun Home() {
             FloatingActionButton(onClick = { /*TODO Move diary screen */ }) {
                 Icon(Icons.Filled.NoteAdd, contentDescription = "Add a diary")
             }
-        }
+        },
     ) {
-        AppNavigation(navController = navController)
+        AppNavigation(navController = navController, modifier = Modifier.padding(it))
     }
 }
 

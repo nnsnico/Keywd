@@ -1,6 +1,7 @@
 package net.nns.keywd
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,8 +14,8 @@ internal sealed class Screen(val route: String) {
 }
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screen.List.route) {
+fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(modifier = modifier, navController = navController, startDestination = Screen.List.route) {
         composable(Screen.List.route) { List() }
         composable(Screen.Calendar.route) { Calendar() }
     }
