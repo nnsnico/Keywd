@@ -1,4 +1,4 @@
-package net.nns.keywd.list
+package net.nns.keywd.ui.screen.calendar
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import net.nns.keywd.Greeting
 
 @Composable
-fun List() {
+fun Calendar() {
     Scaffold {
-        Greeting(name = "List", modifier = Modifier.padding(it))
+        Greeting(name = "Calendar", modifier = Modifier.padding(it))
     }
 }

@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import net.nns.keywd.home.Home
+import net.nns.keywd.ui.screen.home.Home
 import net.nns.keywd.ui.theme.KeywdTheme
 
 class MainActivity : ComponentActivity() {
