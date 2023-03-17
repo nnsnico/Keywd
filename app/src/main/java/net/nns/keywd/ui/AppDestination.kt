@@ -21,10 +21,10 @@ sealed interface Tab {
 }
 
 fun interface TabSelector {
-    fun select(tab: Tab): Unit
+    fun select(tab: Tab)
 }
 
-sealed class Screen(open val name: String, val route: String) {
+sealed class Screen(val name: String, val route: String) {
     object Home : Screen("Home", "home") {
         val tabs = listOf<Tab>(DiaryList, Calendar)
 

@@ -11,9 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import net.nns.keywd.ui.AppNavigation
+import net.nns.keywd.ui.AppState
 import net.nns.keywd.ui.Screen
 import net.nns.keywd.ui.TabSelector
 import net.nns.keywd.ui.rememberAppState
@@ -27,7 +26,7 @@ fun Home() {
         bottomBar = {
             if (appState.shouldShowBottomBar) {
                 HomeTabNavigation(
-                    destination = appState.currentDestination,
+                    appState = appState,
                     selector = appState::navigateToBottomBar,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -53,7 +52,7 @@ private fun HomePreview() {
 
 @Composable
 private fun HomeTabNavigation(
-    destination: NavDestination?,
+    appState: AppState,
     selector: TabSelector,
     modifier: Modifier,
 ) {
@@ -64,7 +63,7 @@ private fun HomeTabNavigation(
             BottomNavigationItem(
                 icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(text = tab.name) },
-                selected = destination?.hierarchy?.any { it.route == tab.route } == true,
+                selected = appState.currentDestination?.route == tab.route,
                 onClick = { selector.select(tab) }
             )
         }
