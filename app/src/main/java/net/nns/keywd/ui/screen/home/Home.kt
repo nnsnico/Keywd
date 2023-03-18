@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavDestination.Companion.hierarchy
 import net.nns.keywd.ui.AppNavigation
 import net.nns.keywd.ui.AppState
 import net.nns.keywd.ui.Screen
@@ -62,8 +63,8 @@ private fun HomeTabNavigation(
             BottomNavigationItem(
                 icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(text = tab.name) },
-                selected = appState.currentDestination?.route == tab.route,
-                onClick = { selector.select(tab) }
+                selected = appState.currentDestination?.hierarchy?.any { it.route == tab.route } == true,
+                onClick = { selector.select(tab) },
             )
         }
     }
