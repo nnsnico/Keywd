@@ -43,12 +43,33 @@ fun Home(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+private fun HomeForPreview() {
+    val appState = rememberAppState()
+
+    Scaffold(
+        bottomBar = {
+            HomeTabNavigation(
+                appState = appState,
+                selector = appState::navigateToBottomBar,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+    ) {
+        AppNavigation(
+            navController = appState.navController,
+            onClickAddDiary = { appState.navigateToScreen(Screen.AddDiary) },
+            modifier = Modifier.padding(it),
+        )
+    }
+}
+
 @Preview(showSystemUi = true)
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
-private fun HomePreview() {
+private fun HomePreviews() {
     KeywdTheme {
-        Home()
+        HomeForPreview()
     }
 }
 
