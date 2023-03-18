@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import net.nns.keywd.Greeting
 
 @Composable
-fun Calendar() {
-    Scaffold {
+fun Calendar(modifier: Modifier = Modifier) {
+    Scaffold(
+        modifier = modifier,
+    ) {
         Greeting(name = "Calendar", modifier = Modifier.padding(it))
     }
 }

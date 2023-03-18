@@ -44,12 +44,12 @@ sealed class Screen(val name: String, val route: String) {
 fun AppNavigation(
     navController: NavHostController,
     onClickAddDiary: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Home.route,
     ) {
         navigation(
             route = Screen.Home.route,

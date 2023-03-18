@@ -19,10 +19,11 @@ import net.nns.keywd.ui.rememberAppState
 import net.nns.keywd.ui.theme.KeywdTheme
 
 @Composable
-fun Home() {
+fun Home(modifier: Modifier = Modifier) {
     val appState = rememberAppState()
 
     Scaffold(
+        modifier = modifier,
         bottomBar = {
             if (appState.shouldShowBottomBar) {
                 HomeTabNavigation(
@@ -36,7 +37,7 @@ fun Home() {
         AppNavigation(
             navController = appState.navController,
             onClickAddDiary = { appState.navigateToScreen(Screen.AddDiary) },
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(it),
         )
     }
 }
@@ -54,11 +55,9 @@ private fun HomePreview() {
 private fun HomeTabNavigation(
     appState: AppState,
     selector: TabSelector,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
-    BottomNavigation(
-        modifier = modifier
-    ) {
+    BottomNavigation(modifier = modifier) {
         Screen.Home.tabs.forEach { tab ->
             BottomNavigationItem(
                 icon = { Icon(tab.icon, contentDescription = null) },
