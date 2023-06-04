@@ -12,10 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
@@ -35,8 +34,10 @@ import net.nns.keywd.ui.theme.KeywdTheme
 @Composable
 fun AddDiary(
     modifier: Modifier = Modifier,
+    viewModel: AddDiaryViewModel = viewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
+    val speechContent by viewModel.speechContent.collectAsState()
     val permissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
 
     DisposableEffect(lifecycleOwner) {
@@ -56,18 +57,22 @@ fun AddDiary(
         }
     }
 
-    AddDiaryComponent(permissionState.status, modifier = modifier)
+    AddDiaryLayout(
+        status = permissionState.status,
+        modifier = modifier,
+        speechContent = speechContent,
+        onChangedText = viewModel::setSpeechContent,
+    )
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun AddDiaryComponent(
+private fun AddDiaryLayout(
     status: PermissionStatus,
     modifier: Modifier = Modifier,
-    initSpeechContent: String = "",
+    speechContent: String = "",
+    onChangedText: (String) -> Unit,
 ) {
-    var speechContent by remember { mutableStateOf(initSpeechContent) }
-
     Scaffold(
         modifier = modifier,
     ) {
@@ -79,7 +84,7 @@ private fun AddDiaryComponent(
                     .fillMaxWidth()
                     .weight(2f),
                 value = speechContent,
-                onValueChange = { text -> speechContent = text },
+                onValueChange = { text -> onChangedText(text) },
             )
             Box(
                 modifier = Modifier
@@ -120,9 +125,10 @@ private fun AudioVisualizer(status: PermissionStatus) {
 fun AddDiaryPreview() {
     val status = PermissionStatus.Granted
     KeywdTheme {
-        AddDiaryComponent(
+        AddDiaryLayout(
             status,
-            initSpeechContent = "hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge",
+            onChangedText = {},
+            speechContent = "hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge",
         )
     }
 }

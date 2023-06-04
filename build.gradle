@@ -20,13 +20,6 @@ subprojects {
         config = files('../detekt_config.yml')
         buildUponDefaultConfig = true
     }
-
-    tasks.whenTaskAdded {
-        if (name == 'compileDebugKotlin') {
-            dependsOn(tasks.detekt)
-            mustRunAfter(tasks.detekt)
-        }
-    }
 }
 
 task clean(type: Delete) {
