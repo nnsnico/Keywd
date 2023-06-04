@@ -18,6 +18,7 @@ androidJunit = '1.1.5'
 espresso = '3.5.1'
 # Lint
 composeLintChecks = '1.1.1'
+ktlint = '11.3.2'
 
 [libraries]
 ## Core ktx library
@@ -48,3 +49,4 @@ slack-compose-lint = { group = 'com.slack.lint.compose', name = 'compose-lint-ch
 android-application = { id = 'com.android.application', version.ref = 'androidGradlePlugin' }
 android-library = { id = 'com.android.library', version.ref = 'androidGradlePlugin' }
 kotlin-android = { id = 'org.jetbrains.kotlin.android', version.ref = 'kotlin' }
+ktlint = { id = 'org.jlleitschuh.gradle.ktlint', version.ref = 'ktlint' }

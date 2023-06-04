@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import net.nns.keywd.ui.screen.calendar.Calendar
 import net.nns.keywd.ui.screen.adddiary.AddDiary
+import net.nns.keywd.ui.screen.calendar.Calendar
 import net.nns.keywd.ui.screen.diarylist.DiaryList
 
 sealed interface Tab {
