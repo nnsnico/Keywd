@@ -31,6 +31,7 @@ androidx-lifecycle-runtime-ktx = { group = 'androidx.lifecycle', name = 'lifecyc
 androidx-compose-bom = { group = 'androidx.compose', name = 'compose-bom', version.ref = 'composeBom' }
 androidx-compose-material = { group = 'androidx.compose.material', name = 'material' }
 androidx-compose-material-icons-extended = { group = 'androidx.compose.material', name = 'material-icons-extended' }
+androidx-compose-ui-tooling = { group = 'androidx.compose.ui', name = 'ui-tooling' }
 androidx-compose-ui-tooling-preview = { group = 'androidx.compose.ui', name = 'ui-tooling-preview' }
 ## Compose integration with Activity
 androidx-activity-compose = { group = 'androidx.activity', name = 'activity-compose', version.ref = 'activityCompose' }
