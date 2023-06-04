@@ -25,7 +25,10 @@ class AppState(
 
     val shouldShowBottomBar: Boolean
         @Composable get() = navController
-            .currentBackStackEntryAsState().value?.destination?.route in bottomBarRoutes
+            .currentBackStackEntryAsState()
+            .value
+            ?.destination
+            ?.route in bottomBarRoutes
 
     val currentDestination: NavDestination?
         get() = navController.currentDestination
