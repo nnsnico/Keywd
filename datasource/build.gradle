@@ -32,13 +32,17 @@ android {
 }
 
 dependencies {
+    implementation project(":model")
 
     implementation(libs.androidx.core.ktx)
+    platform(libs.arrow.kt.arrow.stack)
+    implementation(libs.arrow.kt.arrow.core)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit.junit)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }
