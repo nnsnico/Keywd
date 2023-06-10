@@ -7,6 +7,7 @@ androidGradlePlugin = '7.4.2'
 kotlin = '1.7.10'
 ksp = '1.7.10-1.0.6'
 coreKtx = '1.9.0'
+room = '2.4.3'
 composeBom = '2022.12.00'
 composeCompiler = '1.3.1'
 lifecycleRuntimeKtx = '2.5.1'
@@ -16,6 +17,7 @@ accompanist = '0.28.0'
 # Tests
 junit = '4.13.2'
 androidJunit = '1.1.5'
+androidTestRunner = '1.5.2'
 espresso = '3.5.1'
 # Lint / Analyze
 composeLintChecks = '1.1.1'
@@ -26,6 +28,9 @@ mrmans0nComposeRules = '0.1.7'
 [libraries]
 ## Core ktx library
 androidx-core-ktx = { group = 'androidx.core', name = 'core-ktx', version.ref = 'coreKtx' }
+## Database
+androidx-room-runtime = { group = 'androidx.room', name = 'room-runtime', version.ref = 'room' }
+androidx-room-compiler = { group = 'androidx.room', name = 'room-compiler', version.ref = 'room' }
 ## Lifecycle
 androidx-lifecycle-viewmodel-compose = { group = 'androidx.lifecycle', name = 'lifecycle-viewmodel-compose', version.ref = 'lifecycleRuntimeKtx' }
 ## Core library from BOM
@@ -44,7 +49,9 @@ google-accompanist-permission = { group = 'com.google.accompanist', name = 'acco
 # Tests
 junit-junit = { group = 'junit', name = 'junit', version.ref = 'junit' }
 androidx-junit = { group = 'androidx.test.ext', name = 'junit', version.ref = 'androidJunit' }
+androidx-test-runner = { group = 'androidx.test', name = 'runner', version.ref = 'androidTestRunner' }
 androidx-espresso = { group = 'androidx.test.espresso', name = 'espresso-core', version.ref = 'espresso' }
+androidx-room-testing = { group = 'androidx.room', name = 'room-testing', version.ref = 'room' }
 
 # Lint
 slack-compose-lint = { group = 'com.slack.lint.compose', name = 'compose-lint-checks', version.ref = 'composeLintChecks' }
