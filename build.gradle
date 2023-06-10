@@ -15,6 +15,7 @@ subprojects {
 
     dependencies {
         detektPlugins(libs.mrmans0n.compose.rules)
+        detektPlugins(libs.wolt.arrow.detekt.rules)
     }
 
     detekt {

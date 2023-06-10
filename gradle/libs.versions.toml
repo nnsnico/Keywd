@@ -26,6 +26,7 @@ composeLintChecks = '1.1.1'
 ktlint = '11.3.2' # ktlint
 detekt = '1.22.0'
 mrmans0nComposeRules = '0.1.7'
+woltArrowDetektRule = '0.2.0'
 
 [libraries]
 ## Core ktx library
@@ -62,6 +63,7 @@ kotlinx-coroutines-test = { group = 'org.jetbrains.kotlinx', name = 'kotlinx-cor
 # Lint
 slack-compose-lint = { group = 'com.slack.lint.compose', name = 'compose-lint-checks', version.ref = 'composeLintChecks' }
 mrmans0n-compose-rules = { group = 'io.nlopez.compose.rules', name = 'detekt', version.ref = 'mrmans0nComposeRules' }
+wolt-arrow-detekt-rules = { group = 'com.wolt.arrow.detekt', name = 'rules', version.ref = 'woltArrowDetektRule' }
 
 [plugins]
 android-application = { id = 'com.android.application', version.ref = 'androidGradlePlugin' }
