@@ -32,5 +32,9 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    platform(libs.arrow.kt.arrow.stack)
+    implementation(libs.arrow.kt.arrow.core)
+
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.junit)
 }

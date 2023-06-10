@@ -1,5 +1,10 @@
 package net.nns.keywd.model
 
+import arrow.core.Either
+import arrow.core.continuations.either
+import arrow.core.getOrElse
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -9,9 +14,10 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 @RunWith(JUnit4::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class TitleTest {
     @Test
-    fun fromDate_isCorrectFormat() {
+    fun fromDate_isSuccess_whenCorrectFormat() = runTest {
         val zoneJST = ZonedDateTime.parse(
             "2023/06/04 10:15:30 JST",
             DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss zzz"),
@@ -20,10 +26,46 @@ class TitleTest {
             "2023/06/04 00:15:30 UTC",
             DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss zzz"),
         )
-        val expectJST = Title.fromDate(Date.from(zoneJST.toInstant()))
-        val expectUTC = Title.fromDate(Date.from(zoneUTC.toInstant()))
+        val expectJST = Title.fromDate(Date.from(zoneJST.toInstant())).getOrElse { null }
+        val expectUTC = Title.fromDate(Date.from(zoneUTC.toInstant())).getOrElse { null }
 
-        Assert.assertEquals(expectJST.value, "2023-06-04")
-        Assert.assertEquals(expectUTC.value, "2023-06-04")
+        Assert.assertEquals(expectJST?.value, "2023-06-04")
+        Assert.assertEquals(expectUTC?.value, "2023-06-04")
     }
+
+    @Test
+    fun fromDate_isFailure_whenInvalidFormat() = runTest {
+        val invalidDateFormat = Either.catch {
+            ZonedDateTime.parse(
+                "2023-06-04 10:15:30 JST",
+                DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss zzz"),
+            )
+        }
+
+        val expect = either {
+            val instant = invalidDateFormat.map { it.toInstant() }.bind()
+            Title.fromDate(Date.from(instant)).bind()
+        }.getOrElse { null }
+
+        Assert.assertEquals(expect?.value, null)
+    }
+
+    @Test
+    fun fromString_isSuccess_whenCorrectFormat() = runTest {
+        val dateFormat = "2023-06-04"
+
+        val expect = Title.fromString(dateFormat).getOrElse { null }
+
+        Assert.assertEquals(expect?.value, dateFormat)
+    }
+
+    @Test
+    fun fromString_isFailure_whenInvalidFormat() = runTest {
+        val invalidDateFormat = "2023/06/04 00:00:00 JST"
+
+        val expect = Title.fromString(invalidDateFormat).getOrElse { null }
+
+        Assert.assertEquals(expect?.value, null)
+    }
+
 }
