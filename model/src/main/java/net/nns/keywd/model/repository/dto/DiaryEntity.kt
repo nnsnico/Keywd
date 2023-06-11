@@ -1,4 +1,4 @@
-package net.nns.keywd.datasource.entity
+package net.nns.keywd.model.repository.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -16,9 +16,17 @@ data class DiaryEntity(
     suspend fun toDiary(): Either<Throwable, Diary> =
         Title.fromString(title).map {
             Diary(
+                id = id,
                 title = it,
                 content = content,
             )
         }
 
+    companion object {
+        fun fromDiary(diary: Diary): DiaryEntity = DiaryEntity(
+            id = diary.id,
+            title = diary.title.value,
+            content = diary.content,
+        )
+    }
 }

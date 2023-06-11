@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.nns.keywd.datasource.dao.DiaryDao
-import net.nns.keywd.datasource.entity.DiaryEntity
+import net.nns.keywd.model.repository.dto.DiaryEntity
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -35,7 +35,11 @@ class DiaryDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun writeDiaryAndReadInList() {
-        val diary = DiaryEntity(0, "2023-01-01", "fuga")
+        val diary = DiaryEntity(
+            id = 0,
+            title = "2023-01-01",
+            content = "fuga",
+        )
         diaryDao.add(diary)
         val diaryList = diaryDao.getAllDiaryContents()
         assertThat(diaryList[0], equalTo(diary))
