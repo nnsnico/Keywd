@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "Keywd"
 include ':app'
 include ':datasource'
+include ':repository'
 include ':model'
