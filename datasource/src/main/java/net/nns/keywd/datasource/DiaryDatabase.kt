@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import net.nns.keywd.datasource.dao.DiaryDao
 import net.nns.keywd.model.repository.dto.DiaryEntity
 
-@Database(entities = [DiaryEntity::class], version = 1)
+@Database(entities = [DiaryEntity::class], version = 1, exportSchema = false)
 abstract class DiaryDatabase : RoomDatabase() {
     abstract fun diaryDao(): DiaryDao
 }
