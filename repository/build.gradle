@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id 'kotlin-kapt'
 }
 
 android {
@@ -33,7 +34,12 @@ android {
 dependencies {
     implementation project(":model")
     implementation project(":datasource")
+
     implementation(libs.androidx.core.ktx)
+
+    implementation(libs.google.hilt.android)
+    kapt(libs.google.hilt.compiler)
+
     platform(libs.arrow.kt.arrow.stack)
     implementation(libs.arrow.kt.arrow.core)
 

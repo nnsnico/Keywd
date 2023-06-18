@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -20,10 +24,10 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
@@ -34,7 +38,7 @@ import net.nns.keywd.ui.theme.KeywdTheme
 @Composable
 fun AddDiary(
     modifier: Modifier = Modifier,
-    viewModel: AddDiaryViewModel = viewModel(),
+    viewModel: AddDiaryViewModel = hiltViewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
     val speechContent by viewModel.speechContent.collectAsState()
@@ -62,6 +66,7 @@ fun AddDiary(
         modifier = modifier,
         speechContent = speechContent,
         onChangedText = viewModel::setSpeechContent,
+        onConfirmDiary = viewModel::addDiary,
     )
 }
 
@@ -69,12 +74,18 @@ fun AddDiary(
 @Composable
 private fun AddDiaryLayout(
     status: PermissionStatus,
+    onConfirmDiary: () -> Unit,
+    onChangedText: (String) -> Unit,
     modifier: Modifier = Modifier,
     speechContent: String = "",
-    onChangedText: (String) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
+        floatingActionButton = {
+            FloatingActionButton(onClick = onConfirmDiary) {
+                Icon(Icons.Filled.Add, contentDescription = "Confirm a diary")
+            }
+        },
     ) {
         Column(
             modifier = Modifier.padding(it),
@@ -128,6 +139,7 @@ fun AddDiaryPreview() {
         AddDiaryLayout(
             status,
             onChangedText = {},
+            onConfirmDiary = {},
             speechContent = "hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge",
         )
     }
