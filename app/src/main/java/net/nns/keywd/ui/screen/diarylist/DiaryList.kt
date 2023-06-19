@@ -107,7 +107,7 @@ private class DiaryListProvider : PreviewParameterProvider<List<Diary>> {
                 ).traverse {
                     it.orNull()
                 }?.mapIndexed { i, t ->
-                    Diary(i, t, "hoge".repeat(80))
+                    Diary(i.some(), t, "hoge".repeat(80))
                 }.orEmpty(),
             )
         }

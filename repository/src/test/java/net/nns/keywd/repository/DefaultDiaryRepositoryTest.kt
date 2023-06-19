@@ -1,6 +1,8 @@
 package net.nns.keywd.repository
 
 import arrow.core.Either
+import arrow.core.getOrElse
+import arrow.core.traverse
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -103,31 +105,16 @@ class DefaultDiaryRepositoryTest {
         )
         every { dao.getAllDiaryContents() } returns returnedList
 
+        val diaryList = returnedList.traverse { it.toDiary() }.getOrElse { emptyList() }
+
         when (val expect = repository.getSavedDiaries()) {
-            is Either.Right -> Assert.assertEquals(expect.value, returnedList)
+            is Either.Right -> Assert.assertEquals(expect.value, diaryList)
             is Either.Left -> Assert.fail(expect.value.toString())
         }
     }
 
     @Test
     fun getSavedDiaries_isLeft_whenDBSelectFail() = runTest {
-        val returnedList = listOf(
-            DiaryEntity(
-                id = 1,
-                title = "hoge",
-                content = "fuga",
-            ),
-            DiaryEntity(
-                id = 2,
-                title = "hoge",
-                content = "fuga",
-            ),
-            DiaryEntity(
-                id = 3,
-                title = "hoge",
-                content = "fuga",
-            ),
-        )
         every { dao.getAllDiaryContents() } throws SQLException()
 
         val expect = repository.getSavedDiaries()
