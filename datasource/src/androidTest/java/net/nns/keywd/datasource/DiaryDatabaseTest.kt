@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import net.nns.keywd.datasource.dao.DiaryDao
-import net.nns.keywd.model.repository.dto.DiaryEntity
+import net.nns.keywd.datasource.dto.DiaryEntity
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After

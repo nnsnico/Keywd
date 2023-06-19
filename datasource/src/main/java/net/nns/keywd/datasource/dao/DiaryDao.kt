@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import net.nns.keywd.model.repository.dto.DiaryEntity
+import net.nns.keywd.datasource.dto.DiaryEntity
 
 @Dao
 interface DiaryDao {

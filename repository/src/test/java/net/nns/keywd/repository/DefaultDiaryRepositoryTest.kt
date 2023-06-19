@@ -3,16 +3,17 @@ package net.nns.keywd.repository
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.traverse
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.junit4.MockKRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import net.nns.keywd.datasource.dao.DiaryDao
+import net.nns.keywd.datasource.dto.DiaryEntity
 import net.nns.keywd.model.repository.DiaryRepository
-import net.nns.keywd.model.repository.dto.DiaryEntity
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -23,65 +24,99 @@ import java.sql.SQLException
 class DefaultDiaryRepositoryTest {
     private lateinit var repository: DiaryRepository
 
+    @get:Rule
+    val rule = MockKRule(this)
+
     @MockK
     private lateinit var dao: DiaryDao
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
         repository = DefaultDiaryRepository(dao)
     }
 
     @Test
     fun addDiary_isRight_whenDBInsertSucceed() = runTest {
         every { dao.add(any()) } returns Unit
-        val data = DiaryEntity(
+        val entity = DiaryEntity(
             id = 1,
             title = "2023-01-01",
             content = "hoge",
         )
 
-        val expect = repository.addDiary(data)
-        Assert.assertTrue(expect.isRight())
+        when (val data = entity.toDiary()) {
+            is Either.Right -> {
+                val expect = repository.addDiary(data.value)
+                Assert.assertTrue(expect.isRight())
+            }
+
+            is Either.Left -> {
+                Assert.fail("data throws exception.")
+            }
+        }
     }
 
     @Test
     fun addDiary_isLeft_whenDBInsertFail() = runTest {
         every { dao.add(any()) } throws SQLException()
-        val data = DiaryEntity(
+        val entity = DiaryEntity(
             id = 1,
-            title = "hoge",
+            title = "2023-06-01",
             content = "fuga",
         )
 
-        val expect = repository.addDiary(data)
-        Assert.assertTrue(expect.isLeft())
+        when (val data = entity.toDiary()) {
+            is Either.Right -> {
+                val expect = repository.addDiary(data.value)
+                Assert.assertTrue(expect.isLeft())
+            }
+
+            is Either.Left -> {
+                Assert.fail("data throws exception.")
+            }
+        }
     }
 
     @Test
     fun deleteDiary_isRight_whenDBDeleteSucceed() = runTest {
         every { dao.delete(any()) } returns Unit
-        val data = DiaryEntity(
+        val entity = DiaryEntity(
             id = 1,
-            title = "hoge",
+            title = "2023-06-01",
             content = "fuga",
         )
 
-        val expect = repository.deleteDiary(data)
-        Assert.assertTrue(expect.isRight())
+        when (val data = entity.toDiary()) {
+            is Either.Right -> {
+                val expect = repository.deleteDiary(data.value)
+                Assert.assertTrue(expect.isRight())
+            }
+
+            is Either.Left -> {
+                Assert.fail("data throws exception.")
+            }
+        }
     }
 
     @Test
     fun deleteDiary_isLeft_whenDBDeleteFail() = runTest {
         every { dao.delete(any()) } throws SQLException()
-        val data = DiaryEntity(
+        val entity = DiaryEntity(
             id = 1,
-            title = "hoge",
+            title = "2023-06-01",
             content = "fuga",
         )
 
-        val expect = repository.deleteDiary(data)
-        Assert.assertTrue(expect.isLeft())
+        when (val data = entity.toDiary()) {
+            is Either.Right -> {
+                val expect = repository.deleteDiary(data.value)
+                Assert.assertTrue(expect.isLeft())
+            }
+
+            is Either.Left -> {
+                Assert.fail("data throws exception.")
+            }
+        }
     }
 
     @Test
@@ -89,17 +124,17 @@ class DefaultDiaryRepositoryTest {
         val returnedList = listOf(
             DiaryEntity(
                 id = 1,
-                title = "hoge",
+                title = "2023-06-01",
                 content = "fuga",
             ),
             DiaryEntity(
                 id = 2,
-                title = "hoge",
+                title = "2023-06-02",
                 content = "fuga",
             ),
             DiaryEntity(
                 id = 3,
-                title = "hoge",
+                title = "2023-06-03",
                 content = "fuga",
             ),
         )

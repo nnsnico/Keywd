@@ -1,4 +1,4 @@
-package net.nns.keywd.model.repository.dto
+package net.nns.keywd.datasource.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
