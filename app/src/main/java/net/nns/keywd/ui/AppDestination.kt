@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import net.nns.keywd.ui.screen.adddiary.AddDiary
 import net.nns.keywd.ui.screen.calendar.Calendar
-import net.nns.keywd.ui.screen.diarylist.DiaryListColumn
+import net.nns.keywd.ui.screen.diarylist.DiaryList
 
 sealed interface Tab {
     val name: String
@@ -56,7 +56,7 @@ fun AppNavigation(
             startDestination = Screen.Home.DiaryList.route,
         ) {
             composable(Screen.Home.DiaryList.route) {
-                DiaryListColumn(onClickAddDiary = onClickAddDiary)
+                DiaryList(onClickAddDiary = onClickAddDiary)
             }
             composable(Screen.Home.Calendar.route) { Calendar() }
         }

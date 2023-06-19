@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import arrow.core.some
 import arrow.core.traverse
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.Greeting
@@ -29,7 +30,7 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
 
 @Composable
-fun DiaryListColumn(
+fun DiaryList(
     modifier: Modifier = Modifier,
     viewModel: DiaryListViewModel = hiltViewModel(),
     onClickAddDiary: () -> Unit,
