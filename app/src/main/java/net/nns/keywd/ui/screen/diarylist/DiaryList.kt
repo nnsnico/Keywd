@@ -1,6 +1,5 @@
 package net.nns.keywd.ui.screen.diarylist
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,18 +49,18 @@ fun DiaryList(
             // TODO: Replace Text to indicate that there is no diary
             Greeting(name = "DiaryList", modifier = Modifier.padding(it))
         } else {
-            DiaryListColumn(diaryList.value)
+            DiaryListColumn(Diaries(diaryList.value))
         }
     }
 }
 
 @Composable
 private fun DiaryListColumn(
-    @SuppressLint("ComposeUnstableCollections") diaryList: List<Diary>,
+    diaryList: Diaries,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier) {
-        items(diaryList) { diary ->
+        items(diaryList.value) { diary ->
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier
@@ -85,15 +85,18 @@ private fun DiaryListColumn(
 @Preview
 @Composable
 private fun DiaryListColumnPreview(
-    @PreviewParameter(DiaryListProvider::class) diaryList: List<Diary>,
+    @PreviewParameter(DiaryListProvider::class) diaries: Diaries,
 ) {
     Scaffold {
         DiaryListColumn(
-            diaryList = diaryList,
+            diaryList = diaries,
             modifier = Modifier.padding(it),
         )
     }
 }
+
+@Immutable
+data class Diaries(val value: List<Diary>)
 
 private class DiaryListProvider : PreviewParameterProvider<List<Diary>> {
     override val values: Sequence<List<Diary>>
