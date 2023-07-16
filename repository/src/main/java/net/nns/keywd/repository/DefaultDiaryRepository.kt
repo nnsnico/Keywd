@@ -9,12 +9,11 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.repository.DiaryRepository
 
 class DefaultDiaryRepository(private val diaryDao: DiaryDao) : DiaryRepository {
-    override suspend fun addDiary(diary: Diary): Either<Throwable, Diary> =
-        Either.catch { diaryDao.add(DiaryEntity.fromDiary(diary)) }.map { diary }
+    override suspend fun addDiary(diary: Diary): Either<Throwable, Unit> =
+        Either.catch { diaryDao.add(DiaryEntity.fromDiary(diary)) }
 
-
-    override suspend fun deleteDiary(diary: Diary): Either<Throwable, Diary> =
-        Either.catch { diaryDao.delete(DiaryEntity.fromDiary(diary)) }.map { diary }
+    override suspend fun deleteDiary(diary: Diary): Either<Throwable, Unit> =
+        Either.catch { diaryDao.delete(DiaryEntity.fromDiary(diary)) }
 
     // TODO: Make traverse as utility function because it is deprecated
     // @see: https://github.com/arrow-kt/arrow/blob/722a7c003db8c6612e190492cafbbc8f5e659851/arrow-libs/core/arrow-core/src/commonMain/kotlin/arrow/core/Iterable.kt#L299
