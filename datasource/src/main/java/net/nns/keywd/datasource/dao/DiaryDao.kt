@@ -9,11 +9,11 @@ import net.nns.keywd.datasource.dto.DiaryEntity
 @Dao
 interface DiaryDao {
     @Query("SELECT * FROM DiaryEntity")
-    fun getAllDiaryContents(): List<DiaryEntity>
+    suspend fun getAllDiaryContents(): List<DiaryEntity>
 
     @Insert
-    fun add(diary: DiaryEntity)
+    suspend fun add(diary: DiaryEntity)
 
     @Delete
-    fun delete(diary: DiaryEntity)
+    suspend fun delete(diary: DiaryEntity)
 }

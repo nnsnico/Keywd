@@ -11,7 +11,7 @@ import net.nns.keywd.model.Title
 
 @Entity
 data class DiaryEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 1,
     @ColumnInfo val title: String,
     @ColumnInfo val content: String,
 ) {

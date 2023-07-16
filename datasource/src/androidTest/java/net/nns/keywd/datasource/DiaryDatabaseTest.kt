@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import net.nns.keywd.datasource.dao.DiaryDao
 import net.nns.keywd.datasource.dto.DiaryEntity
 import org.hamcrest.CoreMatchers.equalTo
@@ -34,9 +35,8 @@ class DiaryDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeDiaryAndReadInList() {
+    fun writeDiaryAndReadInList() = runBlocking {
         val diary = DiaryEntity(
-            id = 0,
             title = "2023-01-01",
             content = "fuga",
         )

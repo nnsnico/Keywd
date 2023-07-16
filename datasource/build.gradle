@@ -43,7 +43,9 @@ dependencies {
 
     platform(libs.arrow.kt.arrow.stack)
     implementation(libs.arrow.kt.arrow.core)
+
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit.junit)
