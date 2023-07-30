@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":datasource"))
     implementation(project(":repository"))
     implementation(project(":model"))
+    implementation(project(":core"))
 
     implementation libs.androidx.core.ktx
 
