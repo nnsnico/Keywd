@@ -3,6 +3,7 @@ package net.nns.keywd.ui.screen.adddiary
 import android.Manifest
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,7 +87,9 @@ fun AddDiary(
         }
 
         is AddResult.Error -> {
+            val context = LocalContext.current
             Log.e("AddDiary", (result as AddResult.Error).message)
+            Toast.makeText(context, "Failed to add a diary", Toast.LENGTH_SHORT).show()
         }
 
         else -> {}

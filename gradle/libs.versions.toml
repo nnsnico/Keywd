@@ -32,6 +32,9 @@ mrmans0nComposeRules = '0.1.7'
 woltArrowDetektRule = '0.2.0'
 
 [libraries]
+## Kotlin bom
+kotlin-bom = { group = 'org.jetbrains.kotlin', name = 'kotlin-bom', version.ref = 'kotlin' }
+kotlin-stdlib = { group = 'org.jetbrains.kotlin', name = 'kotlin-stdlib' }
 ## Core ktx library
 androidx-core-ktx = { group = 'androidx.core', name = 'core-ktx', version.ref = 'coreKtx' }
 ## Hilt

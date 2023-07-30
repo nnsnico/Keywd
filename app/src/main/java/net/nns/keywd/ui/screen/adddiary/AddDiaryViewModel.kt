@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.nns.keywd.core.fold
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
 import net.nns.keywd.model.repository.DiaryRepository
 import java.util.Calendar
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,18 +31,27 @@ class AddDiaryViewModel @Inject constructor(
             // FIXME: Use LocalDate
             val result = either {
                 val title = Title.fromDate(Calendar.getInstance().time).bind()
+                val notEmptyContent = content.isNotEmpty().fold(
+                    isTrue = { content },
+                    isFalse = { IllegalStateException("Content is empty") },
+                ).bind()
                 val diary = Diary(
                     id = none(),
                     title = title,
-                    content = content,
+                    content = notEmptyContent,
                 )
                 repository.addDiary(diary).bind()
             }
 
             Log.d("AddDiaryViewModel", result.toString())
             when (result) {
-                is Either.Right -> _addResult.value = AddResult.Success
-                is Either.Left -> _addResult.value = AddResult.Error(result.value.toString())
+                is Either.Right -> _addResult.emit(AddResult.Success)
+                is Either.Left -> _addResult.emit(
+                    AddResult.Error(
+                        key = UUID.randomUUID(),
+                        result.value.toString(),
+                    ),
+                )
             }
         }
     }
@@ -48,6 +59,8 @@ class AddDiaryViewModel @Inject constructor(
     sealed class AddResult {
         object Initial : AddResult()
         object Success : AddResult()
-        data class Error(val message: String) : AddResult()
+
+        // need `key` to emit state with same message
+        data class Error(val key: UUID, val message: String) : AddResult()
     }
 }
