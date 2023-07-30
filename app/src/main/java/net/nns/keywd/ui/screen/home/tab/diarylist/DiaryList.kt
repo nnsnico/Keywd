@@ -1,4 +1,4 @@
-package net.nns.keywd.ui.screen.diarylist
+package net.nns.keywd.ui.screen.home.tab.diarylist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

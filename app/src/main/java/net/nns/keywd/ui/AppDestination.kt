@@ -6,13 +6,11 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import net.nns.keywd.ui.screen.adddiary.AddDiary
-import net.nns.keywd.ui.screen.calendar.Calendar
-import net.nns.keywd.ui.screen.diarylist.DiaryList
+import net.nns.keywd.ui.screen.adddiary.addDiaryGraph
+import net.nns.keywd.ui.screen.adddiary.navigateAddDiary
+import net.nns.keywd.ui.screen.home.tab.calendar.calendarGraph
+import net.nns.keywd.ui.screen.home.tab.diarylist.diaryListGraph
 
 sealed interface Tab {
     val name: String
@@ -20,21 +18,22 @@ sealed interface Tab {
     val icon: ImageVector
 }
 
-fun interface TabSelector {
-    fun select(tab: Tab)
+sealed interface HasNestedNavigation {
+    val routePattern: String
 }
 
 sealed class Screen(val name: String, val route: String) {
     object Home : Screen("Home", "home") {
         val tabs = listOf<Tab>(DiaryList, Calendar)
+    }
 
-        object DiaryList : Screen("List", "home/list"), Tab {
-            override val icon: ImageVector = Icons.Filled.List
-        }
+    object DiaryList : Screen("List", "list"), Tab, HasNestedNavigation {
+        override val icon: ImageVector = Icons.Filled.List
+        override val routePattern: String = "list_graph"
+    }
 
-        object Calendar : Screen("Calendar", "home/calender"), Tab {
-            override val icon: ImageVector = Icons.Filled.CalendarViewMonth
-        }
+    object Calendar : Screen("Calendar", "calender"), Tab {
+        override val icon: ImageVector = Icons.Filled.CalendarViewMonth
     }
 
     object AddDiary : Screen("Diary", "diary")
@@ -42,24 +41,23 @@ sealed class Screen(val name: String, val route: String) {
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController,
-    onClickAddDiary: () -> Unit,
+    appState: AppState,
     modifier: Modifier = Modifier,
 ) {
+    val navController = appState.navController
     NavHost(
-        modifier = modifier,
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = Screen.DiaryList.routePattern,
+        modifier = modifier,
     ) {
-        navigation(
-            route = Screen.Home.route,
-            startDestination = Screen.Home.DiaryList.route,
-        ) {
-            composable(Screen.Home.DiaryList.route) {
-                DiaryList(onClickAddDiary = onClickAddDiary)
-            }
-            composable(Screen.Home.Calendar.route) { Calendar() }
-        }
-        composable(Screen.AddDiary.route) { AddDiary() }
+        diaryListGraph(
+            onClickFab = navController::navigateAddDiary,
+            nestedGraphs = {
+                addDiaryGraph(
+                    onConfirmDialog = navController::popBackStack,
+                )
+            },
+        )
+        calendarGraph()
     }
 }

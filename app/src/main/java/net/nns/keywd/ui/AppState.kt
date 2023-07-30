@@ -8,44 +8,52 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
+import net.nns.keywd.ui.screen.adddiary.navigateAddDiary
+import net.nns.keywd.ui.screen.home.tab.calendar.navigateCalendar
+import net.nns.keywd.ui.screen.home.tab.diarylist.navigateDiaryList
 
 @Composable
 fun rememberAppState(
     navController: NavHostController = rememberNavController(),
-) = remember(navController) {
-    AppState(navController)
+): AppState {
+    return remember(
+        navController,
+    ) {
+        AppState(navController)
+    }
 }
 
 @Stable
 class AppState(
     val navController: NavHostController,
 ) {
-    val bottomBarTabs = Screen.Home.tabs
+    private val bottomBarTabs = Screen.Home.tabs
     private val bottomBarRoutes = bottomBarTabs.map { it.route }
 
-    val shouldShowBottomBar: Boolean
-        @Composable get() = navController
-            .currentBackStackEntryAsState()
-            .value
-            ?.destination
-            ?.route in bottomBarRoutes
-
     val currentDestination: NavDestination?
-        get() = navController.currentDestination
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
+
+    val shouldShowBottomBar: Boolean
+        @Composable get() = currentDestination?.route in bottomBarRoutes
 
     fun navigateToBottomBar(tab: Tab) {
-        if (tab.route != currentDestination?.route) {
-            navController.navigate(tab.route) {
-                launchSingleTop = true
-                restoreState = true
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
+        val navOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
             }
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        when (tab) {
+            Screen.DiaryList -> navController.navigateDiaryList(navOptions)
+            Screen.Calendar -> navController.navigateCalendar(navOptions)
         }
     }
 
-    fun navigateToScreen(screen: Screen) {
-        navController.navigate(screen.route)
+    fun navigateAddDiary() {
+        navController.navigateAddDiary()
     }
+
 }

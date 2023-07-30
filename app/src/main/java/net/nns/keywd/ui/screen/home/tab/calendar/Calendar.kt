@@ -1,4 +1,4 @@
-package net.nns.keywd.ui.screen.calendar
+package net.nns.keywd.ui.screen.home.tab.calendar
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
