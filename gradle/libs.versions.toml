@@ -6,6 +6,7 @@
 androidGradlePlugin = '7.4.2'
 kotlin = '1.7.10'
 kotlinCoroutines = '1.6.4'
+kotlinxCollectionsImmutable = '0.3.5'
 ksp = '1.7.10-1.0.6'
 coreKtx = '1.9.0'
 hilt = '2.45'
@@ -35,6 +36,8 @@ woltArrowDetektRule = '0.2.0'
 ## Kotlin bom
 kotlin-bom = { group = 'org.jetbrains.kotlin', name = 'kotlin-bom', version.ref = 'kotlin' }
 kotlin-stdlib = { group = 'org.jetbrains.kotlin', name = 'kotlin-stdlib' }
+## Kotlin Immutable Collection
+kotlinx-collections-immutable = { group = 'org.jetbrains.kotlinx', name = 'kotlinx-collections-immutable', version.ref = 'kotlinxCollectionsImmutable' }
 ## Core ktx library
 androidx-core-ktx = { group = 'androidx.core', name = 'core-ktx', version.ref = 'coreKtx' }
 ## Hilt

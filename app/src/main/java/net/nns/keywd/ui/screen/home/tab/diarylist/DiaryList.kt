@@ -13,7 +13,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import arrow.core.some
 import arrow.core.traverse
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.Greeting
 import net.nns.keywd.model.Diary
@@ -49,18 +50,18 @@ fun DiaryList(
             // TODO: Replace Text to indicate that there is no diary
             Greeting(name = "DiaryList", modifier = Modifier.padding(it))
         } else {
-            DiaryListColumn(Diaries(diaryList.value))
+            DiaryListColumn(diaryList.value.toImmutableList())
         }
     }
 }
 
 @Composable
 private fun DiaryListColumn(
-    diaryList: Diaries,
+    diaryList: ImmutableList<Diary>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier) {
-        items(diaryList.value) { diary ->
+        items(diaryList) { diary ->
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier
@@ -85,7 +86,7 @@ private fun DiaryListColumn(
 @Preview
 @Composable
 private fun DiaryListColumnPreview(
-    @PreviewParameter(DiaryListProvider::class) diaries: Diaries,
+    @PreviewParameter(DiaryListProvider::class) diaries: ImmutableList<Diary>,
 ) {
     Scaffold {
         DiaryListColumn(
@@ -94,9 +95,6 @@ private fun DiaryListColumnPreview(
         )
     }
 }
-
-@Immutable
-data class Diaries(val value: List<Diary>)
 
 private class DiaryListProvider : PreviewParameterProvider<List<Diary>> {
     override val values: Sequence<List<Diary>>

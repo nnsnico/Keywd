@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":core"))
 
     implementation libs.androidx.core.ktx
+    implementation libs.kotlinx.collections.immutable
 
     def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
