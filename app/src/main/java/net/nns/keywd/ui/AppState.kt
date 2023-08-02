@@ -37,6 +37,17 @@ class AppState(
     val shouldShowBottomBar: Boolean
         @Composable get() = currentDestination?.route in bottomBarRoutes
 
+    fun removeAddDiaryResult() {
+        navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>(Screen.RESULT_KEY_IS_ADDED_DIARY)
+    }
+
+    fun saveAddDiaryResult(value: Boolean) {
+        navController.previousBackStackEntry?.savedStateHandle?.set(
+            Screen.RESULT_KEY_IS_ADDED_DIARY,
+            value,
+        )
+    }
+
     fun navigateToBottomBar(tab: Tab) {
         val navOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
@@ -55,5 +66,4 @@ class AppState(
     fun navigateAddDiary() {
         navController.navigateAddDiary()
     }
-
 }

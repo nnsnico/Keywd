@@ -23,7 +23,9 @@ internal fun NavGraphBuilder.diaryListGraph(
         startDestination = Screen.DiaryList.route,
     ) {
         composable(Screen.DiaryList.route) {
+            val isAddedDiary = it.savedStateHandle[Screen.RESULT_KEY_IS_ADDED_DIARY] ?: false
             DiaryList(
+                isAddedDiary = isAddedDiary,
                 onClickAddDiary = onClickFab,
             )
         }

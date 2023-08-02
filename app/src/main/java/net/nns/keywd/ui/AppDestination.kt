@@ -37,6 +37,10 @@ sealed class Screen(val name: String, val route: String) {
     }
 
     object AddDiary : Screen("Diary", "diary")
+
+    companion object {
+        const val RESULT_KEY_IS_ADDED_DIARY: String = "is_added_diary"
+    }
 }
 
 @Composable
@@ -51,13 +55,18 @@ fun AppNavigation(
         modifier = modifier,
     ) {
         diaryListGraph(
-            onClickFab = navController::navigateAddDiary,
-            nestedGraphs = {
-                addDiaryGraph(
-                    onConfirmDialog = navController::popBackStack,
-                )
+            onClickFab = {
+                appState.removeAddDiaryResult()
+                navController.navigateAddDiary()
             },
-        )
+        ) {
+            addDiaryGraph(
+                onConfirmDialog = {
+                    appState.saveAddDiaryResult(true)
+                    navController.popBackStack()
+                },
+            )
+        }
         calendarGraph()
     }
 }

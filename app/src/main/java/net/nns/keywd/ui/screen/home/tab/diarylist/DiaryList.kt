@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.traverse
 import kotlinx.collections.immutable.ImmutableList
@@ -32,11 +34,18 @@ import net.nns.keywd.model.Title
 
 @Composable
 fun DiaryList(
+    isAddedDiary: Boolean,
     modifier: Modifier = Modifier,
     viewModel: DiaryListViewModel = hiltViewModel(),
     onClickAddDiary: () -> Unit,
 ) {
     val diaryList = viewModel.diaryList.collectAsState()
+
+    LaunchedEffect(isAddedDiary) {
+        if (isAddedDiary) {
+            viewModel.getAllDiary()
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -60,8 +69,13 @@ private fun DiaryListColumn(
     diaryList: ImmutableList<Diary>,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier) {
-        items(diaryList) { diary ->
+    LazyColumn(
+        modifier = modifier,
+    ) {
+        items(
+            items = diaryList,
+            key = { it.id.getOrElse { -1 } },
+        ) { diary ->
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier
@@ -96,8 +110,8 @@ private fun DiaryListColumnPreview(
     }
 }
 
-private class DiaryListProvider : PreviewParameterProvider<List<Diary>> {
-    override val values: Sequence<List<Diary>>
+private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>> {
+    override val values: Sequence<ImmutableList<Diary>>
         get() = runBlocking {
             sequenceOf(
                 listOf(
@@ -109,7 +123,7 @@ private class DiaryListProvider : PreviewParameterProvider<List<Diary>> {
                     it.orNull()
                 }?.mapIndexed { i, t ->
                     Diary(i.some(), t, "hoge".repeat(80))
-                }.orEmpty(),
+                }.orEmpty().toImmutableList(),
             )
         }
 }
