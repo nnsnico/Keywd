@@ -55,10 +55,7 @@ fun AppNavigation(
         modifier = modifier,
     ) {
         diaryListGraph(
-            onClickFab = {
-                appState.removeAddDiaryResult()
-                navController.navigateAddDiary()
-            },
+            onClickFab = navController::navigateAddDiary,
         ) {
             addDiaryGraph(
                 onConfirmDialog = {

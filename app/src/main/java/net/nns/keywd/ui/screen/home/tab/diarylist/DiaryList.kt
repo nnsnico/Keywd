@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.traverse
@@ -31,20 +32,22 @@ import kotlinx.coroutines.runBlocking
 import net.nns.keywd.Greeting
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
+import net.nns.keywd.ui.Screen
 
 @Composable
 fun DiaryList(
-    isAddedDiary: Boolean,
+    savedState: SavedStateHandle,
     modifier: Modifier = Modifier,
     viewModel: DiaryListViewModel = hiltViewModel(),
     onClickAddDiary: () -> Unit,
 ) {
     val diaryList = viewModel.diaryList.collectAsState()
 
-    LaunchedEffect(isAddedDiary) {
-        if (isAddedDiary) {
+    LaunchedEffect(savedState) {
+        if (savedState.get<Boolean>(Screen.RESULT_KEY_IS_ADDED_DIARY) == true) {
             viewModel.getAllDiary()
         }
+        savedState.remove<Boolean>(Screen.RESULT_KEY_IS_ADDED_DIARY)
     }
 
     Scaffold(

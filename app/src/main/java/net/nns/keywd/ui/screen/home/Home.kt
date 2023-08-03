@@ -32,10 +32,7 @@ fun Home(
             if (appState.shouldShowBottomBar) {
                 HomeTabNavigation(
                     currentDestination = appState.currentDestination,
-                    onSelectTab = {
-                        appState.removeAddDiaryResult()
-                        appState.navigateToBottomBar(it)
-                    },
+                    onSelectTab = appState::navigateToBottomBar,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
