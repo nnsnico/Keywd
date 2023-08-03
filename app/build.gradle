@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -49,7 +51,7 @@ android {
         }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
             freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
@@ -69,6 +71,9 @@ dependencies {
     implementation(project(":repository"))
     implementation(project(":model"))
     implementation(project(":core"))
+
+    implementation(project(":ui:core"))
+    implementation(project(":ui:home"))
 
     implementation libs.androidx.core.ktx
     implementation libs.kotlinx.collections.immutable

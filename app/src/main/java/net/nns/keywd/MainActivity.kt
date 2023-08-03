@@ -3,13 +3,9 @@ package net.nns.keywd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import net.nns.keywd.ui.screen.home.Home
-import net.nns.keywd.ui.theme.KeywdTheme
+import net.nns.keywd.ui.core.theme.KeywdTheme
+import net.nns.keywd.ui.home.Home
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,18 +16,5 @@ class MainActivity : ComponentActivity() {
                 Home()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!", modifier = modifier)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    KeywdTheme {
-        Greeting("Android")
     }
 }

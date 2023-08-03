@@ -31,6 +31,8 @@ ktlint = '11.3.2' # ktlint
 detekt = '1.22.0'
 mrmans0nComposeRules = '0.1.7'
 woltArrowDetektRule = '0.2.0'
+appcompat = "1.6.1"
+material = "1.9.0"
 
 [libraries]
 ## Kotlin bom
@@ -80,6 +82,8 @@ mockk-agent = { group = 'io.mockk', name = 'mockk-agent', version.ref = 'mockk' 
 slack-compose-lint = { group = 'com.slack.lint.compose', name = 'compose-lint-checks', version.ref = 'composeLintChecks' }
 mrmans0n-compose-rules = { group = 'io.nlopez.compose.rules', name = 'detekt', version.ref = 'mrmans0nComposeRules' }
 wolt-arrow-detekt-rules = { group = 'com.wolt.arrow.detekt', name = 'rules', version.ref = 'woltArrowDetektRule' }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = 'com.android.application', version.ref = 'androidGradlePlugin' }
