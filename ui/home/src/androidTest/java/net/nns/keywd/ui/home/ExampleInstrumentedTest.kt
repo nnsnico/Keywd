@@ -1,4 +1,4 @@
-package net.nns.keywd.ui.calendar
+package net.nns.keywd.ui.home
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("net.nns.keywd.ui.calendar.test", appContext.packageName)
+        assertEquals("net.nns.keywd.ui.test", appContext.packageName)
     }
 }

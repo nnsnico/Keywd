@@ -1,4 +1,4 @@
-package net.nns.keywd.ui.calendar
+package net.nns.keywd.ui.adddiary
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
