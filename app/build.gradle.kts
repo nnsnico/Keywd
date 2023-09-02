@@ -1,57 +1,61 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.hilt)
-    id 'kotlin-kapt'
+    id("kotlin-kapt")
 }
 
 android {
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        namespace "net.nns.keywd"
-        applicationId "net.nns.keywd"
-        minSdk libs.versions.minSdk.get().toInteger()
-        targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 1
-        versionName "1.0"
+        namespace = "net.nns.keywd"
+        applicationId = "net.nns.keywd"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = 1
+        versionName = "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
-            useSupportLibrary true
+            useSupportLibrary = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
     buildFeatures {
-        compose true
+        compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     packagingOptions {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 
-    tasks.withType(KotlinCompile).configureEach {
+    tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
@@ -75,11 +79,11 @@ dependencies {
     implementation(project(":ui:core"))
     implementation(project(":ui:home"))
 
-    implementation libs.androidx.core.ktx
-    implementation libs.kotlinx.collections.immutable
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.collections.immutable)
 
-    def composeBom = platform(libs.androidx.compose.bom)
-    implementation composeBom
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.ui.tooling)
@@ -96,10 +100,10 @@ dependencies {
     implementation(platform(libs.arrow.kt.arrow.stack))
     implementation(libs.arrow.kt.arrow.core)
 
-    lintChecks libs.slack.compose.lint
+    lintChecks(libs.slack.compose.lint)
 
-    testImplementation libs.junit.junit
-    androidTestImplementation libs.androidx.junit
-    androidTestImplementation libs.androidx.espresso
-    androidTestImplementation composeBom
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso)
+    androidTestImplementation(composeBom)
 }
