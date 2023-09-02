@@ -9,13 +9,15 @@ plugins {
 }
 
 android {
-    namespace = "net.nns.keywd"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    val versions = libs.versions
+
+    namespace = versions.packageName.get()
+    compileSdk = versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "net.nns.keywd"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        minSdk = versions.minSdk.get().toInt()
+        targetSdk = versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -46,9 +48,9 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = versions.composeCompiler.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

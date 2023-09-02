@@ -7,11 +7,13 @@ plugins {
 }
 
 android {
-    namespace = "net.nns.keywd.datasource"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    val versions = libs.versions
+
+    namespace = versions.packageName.get() + "datasource"
+    compileSdk = versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

@@ -6,11 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "net.nns.keywd.ui.adddiary"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    val versions = libs.versions
+
+    namespace = versions.packageName.get() + "ui.adddiary"
+    compileSdk = versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -36,7 +38,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = versions.composeCompiler.get()
     }
 }
 
