@@ -2,6 +2,10 @@
 # Note: dependencies are based on kotlin version
 #
 [versions]
+# Android Base
+compileSdk = "33"
+minSdk = "21"
+targetSdk = "33"
 # Core
 androidGradlePlugin = '7.4.2'
 kotlin = '1.7.10'

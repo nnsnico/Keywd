@@ -9,13 +9,13 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         namespace "net.nns.keywd"
         applicationId "net.nns.keywd"
-        minSdk 21
-        targetSdk 33
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode 1
         versionName "1.0"
 
