@@ -20,7 +20,7 @@ subprojects {
     }
 
     detekt {
-        config = files('../detekt_config.yml')
+        config = files(rootProject.project.file('detekt_config.yml').absolutePath)
         buildUponDefaultConfig = true
     }
 }
