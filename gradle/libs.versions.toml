@@ -7,7 +7,7 @@ compileSdk = "33"
 minSdk = "21"
 targetSdk = "33"
 # Core
-androidGradlePlugin = '7.4.2'
+androidGradlePlugin = "8.1.1"
 kotlin = '1.7.10'
 kotlinCoroutines = '1.6.4'
 kotlinxCollectionsImmutable = '0.3.5'

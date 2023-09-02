@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,10 +9,10 @@ plugins {
 }
 
 android {
+    namespace = "net.nns.keywd"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        namespace = "net.nns.keywd"
         applicationId = "net.nns.keywd"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()

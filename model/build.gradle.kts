@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -6,10 +5,10 @@ plugins {
 }
 
 android {
+    namespace = "net.nns.keywd.model"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        namespace = "net.nns.keywd.model"
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
