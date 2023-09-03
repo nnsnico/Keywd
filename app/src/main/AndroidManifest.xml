@@ -21,7 +21,9 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Keywd"
-            android:windowSoftInputMode="adjustResize">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
