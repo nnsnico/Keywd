@@ -6,17 +6,16 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.google.ksp) apply false
     alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
 }
 
 subprojects {
-    apply plugin: libs.plugins.ktlint.get().pluginId
     apply plugin: libs.plugins.detekt.get().pluginId
 
     dependencies {
         detektPlugins(libs.mrmans0n.compose.rules)
         detektPlugins(libs.wolt.arrow.detekt.rules)
+        detektPlugins(libs.detekt.formatting)
     }
 
     detekt {

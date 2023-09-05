@@ -34,7 +34,6 @@ espresso = '3.5.1'
 mockk = '1.13.2'
 # Lint / Analyze
 composeLintChecks = '1.1.1'
-ktlint = '11.3.2' # ktlint
 detekt = '1.22.0'
 mrmans0nComposeRules = '0.1.7'
 woltArrowDetektRule = '0.2.0'
@@ -90,6 +89,7 @@ mockk-agent = { group = 'io.mockk', name = 'mockk-agent', version.ref = 'mockk' 
 slack-compose-lint = { group = 'com.slack.lint.compose', name = 'compose-lint-checks', version.ref = 'composeLintChecks' }
 mrmans0n-compose-rules = { group = 'io.nlopez.compose.rules', name = 'detekt', version.ref = 'mrmans0nComposeRules' }
 wolt-arrow-detekt-rules = { group = 'com.wolt.arrow.detekt', name = 'rules', version.ref = 'woltArrowDetektRule' }
+detekt-formatting = { group = 'io.gitlab.arturbosch.detekt', name = 'detekt-formatting', version.ref = 'detekt' }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
@@ -99,5 +99,4 @@ android-library = { id = 'com.android.library', version.ref = 'androidGradlePlug
 kotlin-android = { id = 'org.jetbrains.kotlin.android', version.ref = 'kotlin' }
 google-ksp = { id = 'com.google.devtools.ksp', version.ref = 'ksp' }
 hilt = { id = 'com.google.dagger.hilt.android', version.ref = 'hilt' }
-ktlint = { id = 'org.jlleitschuh.gradle.ktlint', version.ref = 'ktlint' }
 detekt = { id = 'io.gitlab.arturbosch.detekt', version.ref = 'detekt' }
