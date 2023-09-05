@@ -1,98 +1,58 @@
 package net.nns.keywd.ui.adddiary
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.isGranted
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.theme.KeywdTheme
-import java.util.Locale
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AddDiary(
     modifier: Modifier = Modifier,
     viewModel: AddDiaryViewModel = hiltViewModel(),
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     context: Context = LocalContext.current,
     onConfirmDiary: () -> Unit,
 ) {
-    val uiState = rememberUiState(context)
-    val observer: LifecycleEventObserver = remember {
-        LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                if (!uiState.permissionStatus.isGranted) {
-                    uiState.recordAudioPermissionState.launchPermissionRequest()
-                }
-            }
-        }
-    }
+    var textFieldContent by rememberSaveable { mutableStateOf("") }
     val result by viewModel.addResult.collectAsState()
-
-    DisposableEffect(lifecycleOwner.lifecycle, observer) {
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            uiState.speechRecognizer.destroy()
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-    if (uiState.permissionStatus.isGranted && SpeechRecognizer.isRecognitionAvailable(context)) {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.JAPAN.toLanguageTag())
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 180000)
-            putExtra(
-                RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
-                180000,
-            )
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 180000)
-        }
-        uiState.speechRecognizer.startListening(intent)
-    }
-
-    AddDiaryLayout(
-        status = uiState.permissionStatus,
-        onConfirmDiary = { viewModel.addDiary(uiState.speechText) },
-        onChangedText = { text -> uiState.updateTextContent(text) },
-        modifier = modifier,
-        speechContent = uiState.speechText,
-    )
 
     when (result) {
         is AddResult.Success -> {
@@ -106,6 +66,14 @@ fun AddDiary(
 
         else -> {}
     }
+
+    AddDiaryLayout(
+        chips = emptyList<String>().toImmutableList(),
+        onConfirmDiary = { viewModel.addDiary(textFieldContent) },
+        onChangedText = { text -> textFieldContent = text },
+        modifier = modifier,
+        textFieldContent = textFieldContent,
+    )
 }
 
 @Composable
@@ -129,15 +97,17 @@ private fun ConfirmDialogPreview() {
     ConfirmDialog {}
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDiaryLayout(
-    status: PermissionStatus,
+    chips: ImmutableList<String>,
     onConfirmDiary: () -> Unit,
     onChangedText: (String) -> Unit,
     modifier: Modifier = Modifier,
-    speechContent: String = "",
+    textFieldContent: String = "",
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -149,77 +119,48 @@ private fun AddDiaryLayout(
         Column(
             modifier = Modifier.padding(it),
         ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(2f),
-                value = speechContent,
-                onValueChange = { text -> onChangedText(text) },
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                contentAlignment = Alignment.Center,
-            ) {
-                AudioVisualizer(status = status)
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+
+
+            Row {
+                chips.forEach {
+                    InputChip(
+                        modifier = Modifier.padding(horizontal = 2.dp),
+                        selected = false,
+                        label = {
+                            Text(text = it)
+                        },
+                        onClick = { /*TODO*/ },
+                    )
+                }
+
+                BasicTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .focusRequester(focusRequester),
+                    textStyle = TextStyle(color = contentColorFor(MaterialTheme.colorScheme.background)),
+                    value = textFieldContent,
+                    cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
+                    onValueChange = { text -> onChangedText(text) },
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun AudioVisualizer(status: PermissionStatus) {
-    if (status.isGranted) {
-        Text(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            text = "ここにビジュアライザー(波形)が入ってほしい想定",
-        )
-    } else {
-        Text(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            text = "音声の権限が許可されていません",
-        )
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Preview(showSystemUi = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+@Preview(showSystemUi = false)
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
 @Composable
 private fun AddDiaryPreview() {
-    val status = PermissionStatus.Granted
     KeywdTheme {
         AddDiaryLayout(
-            status,
+            chips = listOf("hoge", "fuga").toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
-            speechContent = "hoge".repeat(80),
+            textFieldContent = "hoge".repeat(80),
         )
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Preview
-@Composable
-private fun AudioVisualizerPreview() {
-    val status = PermissionStatus.Granted
-    KeywdTheme {
-        AudioVisualizer(status = status)
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Preview
-@Composable
-private fun AudioVisualizerDeniedPreview() {
-    val status = PermissionStatus.Denied(false)
-    KeywdTheme {
-        AudioVisualizer(status = status)
     }
 }

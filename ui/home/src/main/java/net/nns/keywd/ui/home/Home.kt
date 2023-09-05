@@ -1,14 +1,14 @@
 package net.nns.keywd.ui.home
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Column
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,17 +23,11 @@ fun Home(
     modifier: Modifier = Modifier,
     appState: AppState = rememberAppState(),
 ) {
-    Scaffold(
+    HomeLayout(
+        currentDestination = appState.currentDestination,
+        onSelectTab = appState::navigateToBottomBar,
+        shouldShowBottomBar = appState.shouldShowBottomBar,
         modifier = modifier,
-        bottomBar = {
-            if (appState.shouldShowBottomBar) {
-                HomeTabNavigation(
-                    currentDestination = appState.currentDestination,
-                    onSelectTab = appState::navigateToBottomBar,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        },
     ) {
         AppNavigation(
             appState = appState,
@@ -42,28 +36,42 @@ fun Home(
     }
 }
 
-@Preview(showSystemUi = true)
-@Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES, showSystemUi = true)
+@Preview
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun HomePreviews() {
+private fun HomeLayoutPreviews() {
     KeywdTheme {
-        val appState = rememberAppState()
+        HomeLayout(
+            currentDestination = null,
+            shouldShowBottomBar = true,
+            onSelectTab = {},
+        ) {
+            Text(text = "This is preview")
+        }
+    }
+}
 
-        Scaffold(
-            bottomBar = {
+@Composable
+private fun HomeLayout(
+    currentDestination: NavDestination?,
+    shouldShowBottomBar: Boolean,
+    onSelectTab: (Tab) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            if (shouldShowBottomBar) {
                 HomeTabNavigation(
-                    currentDestination = null,
-                    onSelectTab = appState::navigateToBottomBar,
+                    currentDestination = currentDestination,
+                    onSelectTab = onSelectTab,
                     modifier = Modifier.fillMaxWidth(),
                 )
-            },
-        ) {
-            Column(modifier = Modifier.padding(it)) {
-                AppNavigation(
-                    appState = appState,
-                )
             }
-        }
+        },
+    ) {
+        content(it)
     }
 }
 
@@ -73,11 +81,11 @@ private fun HomeTabNavigation(
     onSelectTab: (Tab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    BottomNavigation(
+    NavigationBar(
         modifier = modifier,
     ) {
         Screen.Home.tabs.forEach { tab ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(text = tab.name) },
                 selected = currentDestination.isTabDestinationInHierarchy(tab),
