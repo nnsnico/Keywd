@@ -19,6 +19,8 @@ complexity:
     threshold: 2
 
 style:
+  ForbiddenComment:
+    active: false
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
