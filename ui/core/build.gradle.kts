@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -41,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.collections.immutable)
 
@@ -54,6 +57,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.google.accompanist.permission)
+
+    platform(libs.arrow.kt.arrow.stack)
+    implementation(libs.arrow.kt.arrow.core)
 
     lintChecks(libs.slack.compose.lint)
 

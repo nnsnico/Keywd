@@ -4,19 +4,20 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,18 +31,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
+import net.nns.keywd.ui.core.NonEmptyString
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
 @Composable
@@ -52,6 +55,7 @@ fun AddDiary(
     onConfirmDiary: () -> Unit,
 ) {
     var textFieldContent by rememberSaveable { mutableStateOf("") }
+    var chips by rememberSaveable { mutableStateOf(emptyList<String>()) }
     val result by viewModel.addResult.collectAsState()
 
     when (result) {
@@ -68,9 +72,22 @@ fun AddDiary(
     }
 
     AddDiaryLayout(
-        chips = emptyList<String>().toImmutableList(),
+        chips = chips.toImmutableList(),
         onConfirmDiary = { viewModel.addDiary(textFieldContent) },
-        onChangedText = { text -> textFieldContent = text },
+        onChangedText = { text ->
+            val nonEmptyString = NonEmptyString.init(text)
+            textFieldContent = nonEmptyString.fold(
+                { text },
+                { nes ->
+                    if (nes.value.endsWithBlankOrEnter()) {
+                        chips = chips + nes.value.trim()
+                        ""
+                    } else {
+                        nes.value
+                    }
+                },
+            )
+        },
         modifier = modifier,
         textFieldContent = textFieldContent,
     )
@@ -97,7 +114,6 @@ private fun ConfirmDialogPreview() {
     ConfirmDialog {}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDiaryLayout(
     chips: ImmutableList<String>,
@@ -106,8 +122,6 @@ private fun AddDiaryLayout(
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -116,37 +130,63 @@ private fun AddDiaryLayout(
             }
         },
     ) {
-        Column(
+        DiaryMemoryEditor(
+            chips = chips,
             modifier = Modifier.padding(it),
+            onChangedText = onChangedText,
+            textFieldContent = textFieldContent,
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun DiaryMemoryEditor(
+    chips: ImmutableList<String>,
+    onChangedText: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    textFieldContent: String = "",
+) {
+    val focusRequester = remember { FocusRequester() }
+
+    Box(
+        modifier = modifier,
+    ) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
+        FlowRow(
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(16.dp),
         ) {
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-            }
-
-
-            Row {
-                chips.forEach {
-                    InputChip(
-                        modifier = Modifier.padding(horizontal = 2.dp),
-                        selected = false,
-                        label = {
-                            Text(text = it)
-                        },
-                        onClick = { /*TODO*/ },
-                    )
-                }
-
-                BasicTextField(
+            chips.forEach {
+                AssistChip(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .focusRequester(focusRequester),
-                    textStyle = TextStyle(color = contentColorFor(MaterialTheme.colorScheme.background)),
-                    value = textFieldContent,
-                    cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
-                    onValueChange = { text -> onChangedText(text) },
+                        .wrapContentHeight()
+                        .padding(horizontal = 2.dp),
+                    label = {
+                        Text(text = it)
+                    },
+                    onClick = { /*TODO*/ },
                 )
             }
+
+            BasicTextField(
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .widthIn(min = 100.dp)
+                    .align(Alignment.CenterVertically),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = contentColorFor(MaterialTheme.colorScheme.background),
+                ),
+                maxLines = 1,
+                value = textFieldContent,
+                cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
+                onValueChange = { text -> onChangedText(text) },
+            )
         }
     }
 }
@@ -157,10 +197,10 @@ private fun AddDiaryLayout(
 private fun AddDiaryPreview() {
     KeywdTheme {
         AddDiaryLayout(
-            chips = listOf("hoge", "fuga").toImmutableList(),
+            chips = listOf("hoge", "fuga", "piyo", "foo", "bar").toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
-            textFieldContent = "hoge".repeat(80),
+            textFieldContent = "hoge",
         )
     }
 }
