@@ -11,6 +11,7 @@ targetSdk = "33"
 compileJvm = "17"
 # Core
 androidGradlePlugin = "8.1.1"
+desugarJdkLibs = "2.0.3"
 kotlin = '1.8.20'
 kotlinCoroutines = '1.7.3'
 kotlinxCollectionsImmutable = '0.3.5'
@@ -40,6 +41,8 @@ woltArrowDetektRule = '0.2.0'
 appcompat = "1.6.1"
 
 [libraries]
+## desugar
+desugar-jdk-libs = { group = 'com.android.tools', name = 'desugar_jdk_libs', version.ref = 'desugarJdkLibs' }
 ## Kotlin bom
 kotlin-bom = { group = 'org.jetbrains.kotlin', name = 'kotlin-bom', version.ref = 'kotlin' }
 kotlin-stdlib = { group = 'org.jetbrains.kotlin', name = 'kotlin-stdlib' }

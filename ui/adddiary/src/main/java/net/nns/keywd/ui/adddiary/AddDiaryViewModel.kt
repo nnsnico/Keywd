@@ -15,7 +15,7 @@ import net.nns.keywd.core.fold
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
 import net.nns.keywd.model.repository.DiaryRepository
-import java.util.Calendar
+import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class AddDiaryViewModel @Inject constructor(
         viewModelScope.launch {
             // FIXME: Use LocalDate
             val result = either {
-                val title = Title.fromDate(Calendar.getInstance().time).bind()
+                val title = Title.fromDate(LocalDate.now()).bind()
                 val notEmptyContent = content.isNotEmpty().fold(
                     isTrue = { content },
                     isFalse = { IllegalStateException("Content is empty") },

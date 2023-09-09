@@ -13,6 +13,7 @@ android {
 
     defaultConfig {
         minSdk = versions.minSdk.get().toInt()
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -28,6 +29,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.toVersion(versions.compileJvm.get())
         targetCompatibility = JavaVersion.toVersion(versions.compileJvm.get())
     }
@@ -43,6 +45,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
     implementation(project(":core"))
     implementation(project(":ui:core"))
     implementation(project(":model"))
