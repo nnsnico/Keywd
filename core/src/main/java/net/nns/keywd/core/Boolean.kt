@@ -16,7 +16,7 @@ fun <L, R> Boolean.fold(
     isFalse().left()
 }
 
-fun <T> Boolean.fold(
+fun <T> Boolean.toOption(
     isTrue: () -> T,
 ): Option<T> = if (this) {
     isTrue().some()

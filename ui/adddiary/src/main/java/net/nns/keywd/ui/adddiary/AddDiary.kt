@@ -4,24 +4,31 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,9 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
-import net.nns.keywd.ui.core.NonEmptyString
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
 @Composable
@@ -73,7 +80,9 @@ fun AddDiary(
 
     AddDiaryLayout(
         chips = chips.toImmutableList(),
-        onConfirmDiary = { viewModel.addDiary(textFieldContent) },
+        onConfirmDiary = {
+            viewModel.addDiary(textFieldContent)
+        },
         onChangedText = { text ->
             val nonEmptyString = NonEmptyString.init(text)
             textFieldContent = nonEmptyString.fold(
@@ -87,6 +96,9 @@ fun AddDiary(
                     }
                 },
             )
+        },
+        onChipClose = { index ->
+            chips = chips.filterIndexed { i, _ -> i != index }
         },
         modifier = modifier,
         textFieldContent = textFieldContent,
@@ -111,14 +123,18 @@ private fun ConfirmDialog(
 @Preview
 @Composable
 private fun ConfirmDialogPreview() {
-    ConfirmDialog {}
+    KeywdTheme {
+        ConfirmDialog {}
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDiaryLayout(
     chips: ImmutableList<String>,
     onConfirmDiary: () -> Unit,
     onChangedText: (String) -> Unit,
+    onChipClose: (Int) -> Unit,
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
@@ -129,28 +145,48 @@ private fun AddDiaryLayout(
                 Icon(Icons.Filled.Add, contentDescription = "Confirm a diary")
             }
         },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(
+                            text = "夢の中の出来事は何でしたか？",
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                        Text(
+                            text = "思い出せるキーワードを入力してみましょう。",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                },
+            )
+        },
     ) {
         DiaryMemoryEditor(
             chips = chips,
             modifier = Modifier.padding(it),
             onChangedText = onChangedText,
+            onChipClose = onChipClose,
             textFieldContent = textFieldContent,
         )
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryMemoryEditor(
     chips: ImmutableList<String>,
     onChangedText: (String) -> Unit,
+    onChipClose: (Int) -> Unit,
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
     val focusRequester = remember { FocusRequester() }
 
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
     ) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -158,31 +194,41 @@ fun DiaryMemoryEditor(
 
         FlowRow(
             modifier = Modifier
-                .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(8.dp),
         ) {
-            chips.forEach {
-                AssistChip(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .padding(horizontal = 2.dp),
+            chips.forEachIndexed { index, chip ->
+                InputChip(
+                    modifier = Modifier.padding(horizontal = 4.dp),
                     label = {
-                        Text(text = it)
+                        Text(text = chip)
                     },
-                    onClick = { /*TODO*/ },
+                    onClick = { onChipClose(index) },
+                    selected = true,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            modifier = Modifier
+                                .width(16.dp)
+                                .height(16.dp)
+                                .clickable { onChipClose(index) },
+                            contentDescription = null,
+                            tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
+                        )
+                    },
                 )
             }
 
             BasicTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .widthIn(min = 100.dp)
+                    .widthIn(min = 80.dp)
+                    .padding(4.dp)
                     .align(Alignment.CenterVertically),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = contentColorFor(MaterialTheme.colorScheme.background),
                 ),
-                maxLines = 1,
+                singleLine = true,
                 value = textFieldContent,
                 cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
                 onValueChange = { text -> onChangedText(text) },
@@ -197,9 +243,25 @@ fun DiaryMemoryEditor(
 private fun AddDiaryPreview() {
     KeywdTheme {
         AddDiaryLayout(
-            chips = listOf("hoge", "fuga", "piyo", "foo", "bar").toImmutableList(),
+            chips = listOf("hoge", "fuga", "piyo").toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
+            onChipClose = {},
+            textFieldContent = "hoge",
+        )
+    }
+}
+
+@Preview(showSystemUi = false)
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
+@Composable
+private fun AddDiaryPreviewWithoutChip() {
+    KeywdTheme {
+        AddDiaryLayout(
+            chips = emptyList<String>().toImmutableList(),
+            onConfirmDiary = {},
+            onChangedText = {},
+            onChipClose = {},
             textFieldContent = "hoge",
         )
     }
