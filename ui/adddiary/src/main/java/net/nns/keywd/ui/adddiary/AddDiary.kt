@@ -77,7 +77,8 @@ fun AddDiary(
 
         is AddResult.Error -> {
             Log.e("AddDiary", (result as AddResult.Error).message)
-            Toast.makeText(context, "Failed to add a diary", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "キーワードが入力されていません", Toast.LENGTH_SHORT).show()
+            viewModel.resetResult()
         }
 
         else -> {}

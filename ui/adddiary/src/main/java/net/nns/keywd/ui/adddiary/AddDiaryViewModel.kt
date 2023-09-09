@@ -56,6 +56,12 @@ class AddDiaryViewModel @Inject constructor(
         }
     }
 
+    fun resetResult() {
+        viewModelScope.launch {
+            _addResult.emit(AddResult.Initial)
+        }
+    }
+
     sealed class AddResult {
         object Initial : AddResult()
         object Success : AddResult()
