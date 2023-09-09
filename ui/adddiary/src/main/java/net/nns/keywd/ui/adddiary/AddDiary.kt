@@ -4,14 +4,17 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -28,7 +31,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +46,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,6 +57,7 @@ import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.theme.KeywdTheme
+import net.nns.keywd.ui.core.theme.Shapes
 
 @Composable
 fun AddDiary(
@@ -120,15 +125,7 @@ private fun ConfirmDialog(
     )
 }
 
-@Preview
-@Composable
-private fun ConfirmDialogPreview() {
-    KeywdTheme {
-        ConfirmDialog {}
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDiaryLayout(
     chips: ImmutableList<String>,
@@ -146,29 +143,35 @@ private fun AddDiaryLayout(
             }
         },
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = "夢の中の出来事は何でしたか？",
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        Text(
-                            text = "思い出せるキーワードを入力してみましょう。",
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                },
-            )
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
+                Spacer(modifier = Modifier.heightIn(min = 96.dp))
+                Text(
+                    text = "夢の中の出来事は\n何でしたか？",
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+                Text(
+                    text = "思い出せるキーワードを入力してみましょう",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         },
     ) {
-        DiaryMemoryEditor(
-            chips = chips,
-            modifier = Modifier.padding(it),
-            onChangedText = onChangedText,
-            onChipClose = onChipClose,
-            textFieldContent = textFieldContent,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth(),
+        ) {
+            Spacer(modifier = Modifier.heightIn(min = 16.dp))
+            DiaryMemoryEditor(
+                chips = chips,
+                onChangedText = onChangedText,
+                onChipClose = onChipClose,
+                textFieldContent = textFieldContent,
+            )
+        }
     }
 }
 
@@ -181,51 +184,44 @@ fun DiaryMemoryEditor(
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .padding(8.dp),
     ) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
+        val focusRequester = remember { FocusRequester() }
 
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-        ) {
-            chips.forEachIndexed { index, chip ->
-                InputChip(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    label = {
-                        Text(text = chip)
-                    },
-                    onClick = { onChipClose(index) },
-                    selected = true,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            modifier = Modifier
-                                .width(16.dp)
-                                .height(16.dp)
-                                .clickable { onChipClose(index) },
-                            contentDescription = null,
-                            tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
-                        )
-                    },
+                .fillMaxHeight()
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = Shapes.extraLarge,
                 )
+                .padding(horizontal = 8.dp)
+                .clickable {
+                    focusRequester.requestFocus()
+                },
+        ) {
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+
+            chips.forEachIndexed { index, chip ->
+                KeywordChip(id = index, text = chip, onChipClick = onChipClose)
             }
 
             BasicTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .widthIn(min = 80.dp)
-                    .padding(4.dp)
+                    .padding(horizontal = 4.dp, vertical = 16.dp)
                     .align(Alignment.CenterVertically),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = FontFamily.Default,
                     color = contentColorFor(MaterialTheme.colorScheme.background),
                 ),
                 singleLine = true,
@@ -235,6 +231,41 @@ fun DiaryMemoryEditor(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun KeywordChip(
+    id: Int,
+    text: String,
+    onChipClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    InputChip(
+        modifier = modifier.padding(horizontal = 4.dp),
+        shape = Shapes.extraLarge,
+        label = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+        },
+        onClick = { onChipClick(id) },
+        selected = true,
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                modifier = Modifier
+                    .width(16.dp)
+                    .height(16.dp)
+                    .clickable { onChipClick(id) },
+                contentDescription = null,
+                tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
+            )
+        },
+    )
 }
 
 @Preview(showSystemUi = false)
@@ -264,5 +295,21 @@ private fun AddDiaryPreviewWithoutChip() {
             onChipClose = {},
             textFieldContent = "hoge",
         )
+    }
+}
+
+@Preview
+@Composable
+private fun ConfirmDialogPreview() {
+    KeywdTheme {
+        ConfirmDialog {}
+    }
+}
+
+@Preview
+@Composable
+fun KeywordChipPreview() {
+    KeywdTheme {
+        KeywordChip(id = 1, text = "hoge", onChipClick = {})
     }
 }
