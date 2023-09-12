@@ -18,7 +18,6 @@
             <option value="$PROJECT_DIR$/ui/adddiary" />
             <option value="$PROJECT_DIR$/ui/calendar" />
             <option value="$PROJECT_DIR$/ui/core" />
-            <option value="$PROJECT_DIR$/ui/diarydetails" />
             <option value="$PROJECT_DIR$/ui/diarylist" />
             <option value="$PROJECT_DIR$/ui/home" />
           </set>
