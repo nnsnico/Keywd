@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -35,6 +37,19 @@ android {
     kotlinOptions {
         jvmTarget = versions.compileJvm.get()
     }
+
+    testOptions {
+        managedDevices {
+            devices {
+                maybeCreate<ManagedVirtualDevice>("pixel4aApi21").apply {
+                    device = "Pixel 4a"
+                    apiLevel = 21
+                    systemImageSource = "aosp"
+                }
+            }
+        }
+    }
+
 }
 
 dependencies {
