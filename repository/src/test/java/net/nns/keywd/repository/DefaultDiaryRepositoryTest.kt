@@ -3,10 +3,11 @@ package net.nns.keywd.repository
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.traverse
-import io.mockk.every
+import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit4.MockKRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.mockk.just
 import kotlinx.coroutines.test.runTest
 import net.nns.keywd.datasource.dao.DiaryDao
 import net.nns.keywd.datasource.dto.DiaryEntity
@@ -20,7 +21,6 @@ import org.junit.runners.JUnit4
 import java.sql.SQLException
 
 @RunWith(JUnit4::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultDiaryRepositoryTest {
     private lateinit var repository: DiaryRepository
 
@@ -37,7 +37,10 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun addDiary_isRight_whenDBInsertSucceed() = runTest {
-        every { dao.add(any()) } returns Unit
+        coEvery {
+            dao.add(any())
+        } just Runs
+
         val entity = DiaryEntity(
             id = 1,
             title = "2023-01-01",
@@ -58,7 +61,10 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun addDiary_isLeft_whenDBInsertFail() = runTest {
-        every { dao.add(any()) } throws SQLException()
+        coEvery {
+            dao.add(any())
+        } throws SQLException()
+
         val entity = DiaryEntity(
             id = 1,
             title = "2023-06-01",
@@ -79,7 +85,10 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun deleteDiary_isRight_whenDBDeleteSucceed() = runTest {
-        every { dao.delete(any()) } returns Unit
+        coEvery {
+            dao.delete(any())
+        } just Runs
+
         val entity = DiaryEntity(
             id = 1,
             title = "2023-06-01",
@@ -100,7 +109,10 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun deleteDiary_isLeft_whenDBDeleteFail() = runTest {
-        every { dao.delete(any()) } throws SQLException()
+        coEvery {
+            dao.delete(any())
+        } throws SQLException()
+
         val entity = DiaryEntity(
             id = 1,
             title = "2023-06-01",
@@ -138,7 +150,10 @@ class DefaultDiaryRepositoryTest {
                 content = "fuga",
             ),
         )
-        every { dao.getAllDiaryContents() } returns returnedList
+
+        coEvery {
+            dao.getAllDiaryContents()
+        } returns returnedList
 
         val diaryList = returnedList.traverse { it.toDiary() }.getOrElse { emptyList() }
 
@@ -150,7 +165,7 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun getSavedDiaries_isLeft_whenDBSelectFail() = runTest {
-        every { dao.getAllDiaryContents() } throws SQLException()
+        coEvery { dao.getAllDiaryContents() } throws SQLException()
 
         val expect = repository.getSavedDiaries()
         Assert.assertTrue(expect.isLeft())
