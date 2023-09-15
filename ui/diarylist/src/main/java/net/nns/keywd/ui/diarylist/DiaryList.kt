@@ -2,7 +2,10 @@ package net.nns.keywd.ui.diarylist
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -88,23 +91,30 @@ fun DiaryListLayout(
         },
         contentWindowInsets = WindowInsets.zero(),
     ) {
-
         if (diaryList.isEmpty()) {
             // TODO: Replace Text to indicate that there is no diary
             Greeting(name = "DiaryList", modifier = Modifier.padding(it))
         } else {
-            DiaryListColumn(diaryList.toImmutableList())
+            DiaryListColumn(
+                diaryList.toImmutableList(),
+                contentPadding = it,
+            )
         }
 
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DiaryListColumn(
     diaryList: ImmutableList<Diary>,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier.consumeWindowInsets(contentPadding),
+        contentPadding = contentPadding,
+    ) {
         items(
             items = diaryList,
             key = { it.id.getOrElse { -1 } },
@@ -147,14 +157,11 @@ private fun ListItem(
 
 @Composable
 internal fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!", modifier = modifier)
+    Text(text = "Hello $name!", modifier = modifier.padding(8.dp))
 }
 
 @Preview(showBackground = true)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showSystemUi = true,
-)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DiaryListLayoutPreview(
     @PreviewParameter(DiaryListProvider::class) diaries: ImmutableList<Diary>,
@@ -164,6 +171,15 @@ private fun DiaryListLayoutPreview(
             diaryList = diaries.toImmutableList(),
             onClickAddDiary = {},
         )
+    }
+}
+
+@Preview(showSystemUi = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DiaryListLayoutWhenEmptyPreview() {
+    KeywdTheme {
+        DiaryListLayout(diaryList = emptyList<Diary>().toImmutableList()) {}
     }
 }
 
