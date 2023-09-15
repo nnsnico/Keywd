@@ -271,6 +271,7 @@ fun KeywordChip(
                 modifier = Modifier
                     .width(16.dp)
                     .height(16.dp)
+                    .clip(Shapes.extraLarge)
                     .clickable { onChipClick(id) },
                 contentDescription = null,
                 tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
