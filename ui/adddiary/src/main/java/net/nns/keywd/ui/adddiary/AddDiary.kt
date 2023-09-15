@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
@@ -35,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +66,9 @@ import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
 
+@Stable
+data class Chip(val id: Int, val text: String)
+
 @Composable
 fun AddDiary(
     modifier: Modifier = Modifier,
@@ -71,7 +77,7 @@ fun AddDiary(
     onConfirmDiary: () -> Unit,
 ) {
     var textFieldContent by rememberSaveable { mutableStateOf("") }
-    var chips by rememberSaveable { mutableStateOf(emptyList<String>()) }
+    var chips by rememberSaveable { mutableStateOf(emptyList<Chip>()) }
     val result by viewModel.addResult.collectAsState()
 
     when (result) {
@@ -99,7 +105,7 @@ fun AddDiary(
                 { text },
                 { nes ->
                     if (nes.value.endsWithBlankOrEnter()) {
-                        chips = chips + nes.value.trim()
+                        chips = chips + Chip(chips.count() + 1, nes.value.trim())
                         ""
                     } else {
                         nes.value
@@ -108,7 +114,7 @@ fun AddDiary(
             )
         },
         onChipClose = { index ->
-            chips = chips.filterIndexed { i, _ -> i != index }
+            chips = chips.filter { v -> v.id != index }
         },
         modifier = modifier,
         textFieldContent = textFieldContent,
@@ -132,7 +138,7 @@ private fun ConfirmDialog(
 
 @Composable
 private fun AddDiaryLayout(
-    chips: ImmutableList<String>,
+    chips: ImmutableList<Chip>,
     onConfirmDiary: () -> Unit,
     onChangedText: (String) -> Unit,
     onChipClose: (Int) -> Unit,
@@ -161,6 +167,7 @@ private fun AddDiaryLayout(
                 )
             }
         },
+        contentWindowInsets = WindowInsets.safeDrawing,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -182,7 +189,7 @@ private fun AddDiaryLayout(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DiaryMemoryEditor(
-    chips: ImmutableList<String>,
+    chips: ImmutableList<Chip>,
     onChangedText: (String) -> Unit,
     onChipClose: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -221,8 +228,8 @@ fun DiaryMemoryEditor(
                 focusRequester.requestFocus()
             }
 
-            chips.forEachIndexed { index, chip ->
-                KeywordChip(id = index, text = chip, onChipClick = onChipClose)
+            chips.forEach {
+                KeywordChip(id = it.id, text = it.text, onChipClick = onChipClose)
             }
 
             BasicTextField(
@@ -286,7 +293,12 @@ fun KeywordChip(
 private fun AddDiaryPreview() {
     KeywdTheme {
         AddDiaryLayout(
-            chips = listOf("hoge", "fuga", "piyo").toImmutableList(),
+            chips = listOf(
+                Chip(1, "hoge"),
+                Chip(2, "fuga"),
+                Chip(3, "piyo"),
+                Chip(4, "foo"),
+            ).toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
             onChipClose = {},
@@ -301,7 +313,7 @@ private fun AddDiaryPreview() {
 private fun AddDiaryPreviewWithoutChip() {
     KeywdTheme {
         AddDiaryLayout(
-            chips = emptyList<String>().toImmutableList(),
+            chips = emptyList<Chip>().toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
             onChipClose = {},
