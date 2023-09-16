@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,7 @@ class DiaryListViewModel @Inject constructor(
     }
 
     fun getAllDiary() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _diaryList.value = repository.getSavedDiaries().getOrElse { emptyList() }
         }
     }

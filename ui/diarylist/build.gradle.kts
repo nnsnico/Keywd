@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(project(":ui:core"))
     implementation(project(":model"))
 

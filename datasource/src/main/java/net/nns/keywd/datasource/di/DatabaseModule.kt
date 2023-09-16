@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.nns.keywd.datasource.DiaryDatabase
 import net.nns.keywd.datasource.dao.DiaryDao
+import net.nns.keywd.datasource.dao.DiaryKeywordDao
 import javax.inject.Singleton
 
 @Module
@@ -20,12 +21,17 @@ object DatabaseModule {
     fun provideDiaryDatabase(
         @ApplicationContext context: Context,
     ): DiaryDatabase = Room.databaseBuilder(
-        context,
-        DiaryDatabase::class.java,
-        "diary",
-    ).build()
+        context = context,
+        klass = DiaryDatabase::class.java,
+        name = "diary",
+    ).fallbackToDestructiveMigration().build()
 
     @Singleton
     @Provides
     fun provideDiaryDao(database: DiaryDatabase): DiaryDao = database.diaryDao()
+
+    @Singleton
+    @Provides
+    fun provideDiaryKeywordDao(database: DiaryDatabase): DiaryKeywordDao =
+        database.diaryKeywordDao()
 }

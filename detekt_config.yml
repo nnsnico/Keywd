@@ -18,6 +18,10 @@ complexity:
     active: true
     threshold: 2
 
+performance:
+  SpreadOperator:
+    active: false
+
 style:
   ForbiddenComment:
     active: false

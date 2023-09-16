@@ -10,7 +10,10 @@ import io.mockk.junit4.MockKRule
 import io.mockk.just
 import kotlinx.coroutines.test.runTest
 import net.nns.keywd.datasource.dao.DiaryDao
+import net.nns.keywd.datasource.dao.DiaryKeywordDao
 import net.nns.keywd.datasource.dto.DiaryEntity
+import net.nns.keywd.datasource.dto.DiaryKeywordEntity
+import net.nns.keywd.datasource.dto.DiaryWithKeywordsEntity
 import net.nns.keywd.model.repository.DiaryRepository
 import org.junit.Assert
 import org.junit.Before
@@ -28,24 +31,59 @@ class DefaultDiaryRepositoryTest {
     val rule = MockKRule(this)
 
     @MockK
-    private lateinit var dao: DiaryDao
+    private lateinit var diaryDao: DiaryDao
+
+    @MockK
+    private lateinit var diaryKeywordDao: DiaryKeywordDao
+
+    private val entity
+        get() = run {
+            val diaryEntity = DiaryEntity(
+                id = 1,
+                title = "2023-01-01",
+            )
+            val keywordEntities = listOf(
+                DiaryKeywordEntity(
+                    id = "1",
+                    diaryId = 1,
+                    keyword = "hoge",
+                ),
+                DiaryKeywordEntity(
+                    id = "2",
+                    diaryId = 1,
+                    keyword = "fuga",
+                ),
+                DiaryKeywordEntity(
+                    id = "3",
+                    diaryId = 1,
+                    keyword = "piyo",
+                ),
+            )
+            DiaryWithKeywordsEntity(
+                diary = diaryEntity,
+                keywords = keywordEntities,
+            )
+        }
 
     @Before
     fun setup() {
-        repository = DefaultDiaryRepository(dao)
+        repository = DefaultDiaryRepository(
+            diaryDao = diaryDao,
+            diaryKeywordDao = diaryKeywordDao,
+        )
     }
 
     @Test
     fun addDiary_isRight_whenDBInsertSucceed() = runTest {
         coEvery {
-            dao.add(any())
+            diaryDao.add(any())
+        } returns 1
+        coEvery {
+            diaryDao.getDiaryIdByRowId(any())
+        } returns 1
+        coEvery {
+            diaryKeywordDao.add(any())
         } just Runs
-
-        val entity = DiaryEntity(
-            id = 1,
-            title = "2023-01-01",
-            content = "hoge",
-        )
 
         when (val data = entity.toDiary()) {
             is Either.Right -> {
@@ -62,14 +100,8 @@ class DefaultDiaryRepositoryTest {
     @Test
     fun addDiary_isLeft_whenDBInsertFail() = runTest {
         coEvery {
-            dao.add(any())
+            diaryDao.add(any())
         } throws SQLException()
-
-        val entity = DiaryEntity(
-            id = 1,
-            title = "2023-06-01",
-            content = "fuga",
-        )
 
         when (val data = entity.toDiary()) {
             is Either.Right -> {
@@ -86,14 +118,8 @@ class DefaultDiaryRepositoryTest {
     @Test
     fun deleteDiary_isRight_whenDBDeleteSucceed() = runTest {
         coEvery {
-            dao.delete(any())
+            diaryDao.delete(any())
         } just Runs
-
-        val entity = DiaryEntity(
-            id = 1,
-            title = "2023-06-01",
-            content = "fuga",
-        )
 
         when (val data = entity.toDiary()) {
             is Either.Right -> {
@@ -110,14 +136,8 @@ class DefaultDiaryRepositoryTest {
     @Test
     fun deleteDiary_isLeft_whenDBDeleteFail() = runTest {
         coEvery {
-            dao.delete(any())
+            diaryDao.delete(any())
         } throws SQLException()
-
-        val entity = DiaryEntity(
-            id = 1,
-            title = "2023-06-01",
-            content = "fuga",
-        )
 
         when (val data = entity.toDiary()) {
             is Either.Right -> {
@@ -133,29 +153,13 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun getSavedDiaries_getAllDiariesCompletely() = runTest {
-        val returnedList = listOf(
-            DiaryEntity(
-                id = 1,
-                title = "2023-06-01",
-                content = "fuga",
-            ),
-            DiaryEntity(
-                id = 2,
-                title = "2023-06-02",
-                content = "fuga",
-            ),
-            DiaryEntity(
-                id = 3,
-                title = "2023-06-03",
-                content = "fuga",
-            ),
-        )
+        val entities = listOf(entity)
 
         coEvery {
-            dao.getAllDiaryContents()
-        } returns returnedList
+            diaryDao.getAllDiaryContents()
+        } returns entities
 
-        val diaryList = returnedList.traverse { it.toDiary() }.getOrElse { emptyList() }
+        val diaryList = entities.traverse { it.toDiary() }.getOrElse { emptyList() }
 
         when (val expect = repository.getSavedDiaries()) {
             is Either.Right -> Assert.assertEquals(expect.value, diaryList)
@@ -165,7 +169,7 @@ class DefaultDiaryRepositoryTest {
 
     @Test
     fun getSavedDiaries_isLeft_whenDBSelectFail() = runTest {
-        coEvery { dao.getAllDiaryContents() } throws SQLException()
+        coEvery { diaryDao.getAllDiaryContents() } throws SQLException()
 
         val expect = repository.getSavedDiaries()
         Assert.assertTrue(expect.isLeft())

@@ -32,13 +32,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
+import arrow.core.continuations.option
 import arrow.core.getOrElse
+import arrow.core.nonEmptyListOf
+import arrow.core.sequence
 import arrow.core.some
 import arrow.core.traverse
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
+import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.model.Diary
+import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.ext.zero
@@ -100,7 +105,6 @@ fun DiaryListLayout(
                 contentPadding = it,
             )
         }
-
     }
 }
 
@@ -147,7 +151,7 @@ private fun ListItem(
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .padding(horizontal = 4.dp),
-                text = diary.content,
+                text = diary.keywords.joinToString { it.value.value },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -174,7 +178,7 @@ private fun DiaryListLayoutPreview(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = false)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DiaryListLayoutWhenEmptyPreview() {
@@ -192,10 +196,25 @@ private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>>
                     Title.fromString("2023-06-02"),
                     Title.fromString("2023-06-03"),
                     Title.fromString("2023-06-04"),
-                ).traverse {
-                    it.orNull()
-                }?.mapIndexed { i, t ->
-                    Diary(i.some(), t, "hoge".repeat(80))
+                ).traverse { titleOrErr ->
+                    option {
+                        val title = titleOrErr.orNone().bind()
+                        val keywords = nonEmptyListOf(
+                            NonEmptyString.init("hoge"),
+                            NonEmptyString.init("fuga"),
+                            NonEmptyString.init("piyo"),
+                            NonEmptyString.init("foo"),
+                            NonEmptyString.init("bar"),
+                            NonEmptyString.init("baz"),
+                        ).sequence().bind()
+                        Pair(title, keywords)
+                    }.orNull()
+                }?.mapIndexed { i, (t, nesList) ->
+                    Diary(
+                        id = i.some(),
+                        title = t,
+                        keywords = nesList.map { Keyword(id = "1", value = it) },
+                    )
                 }.orEmpty().toImmutableList(),
             )
         }

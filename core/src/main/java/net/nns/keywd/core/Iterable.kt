@@ -25,6 +25,19 @@ inline fun <E, A, B> Iterable<A>.traverse(f: (A) -> Either<E, B>): Either<E, Lis
 }
 
 @Suppress("MagicNumber")
+inline fun <A, B> Iterable<A>.traverse(f: (A) -> B?): List<B>? {
+    val acc = mutableListOf<B>()
+    forEach { a ->
+        val res = f(a)
+        if (res != null) {
+            acc.add(res)
+        } else {
+            return res
+        }
+    }
+    return acc.toList()
+}
+
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 inline fun <A, B> Iterable<A>.traverse(f: (A) -> Result<B>): Result<List<B>> {

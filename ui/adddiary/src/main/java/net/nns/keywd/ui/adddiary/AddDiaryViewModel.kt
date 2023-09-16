@@ -6,13 +6,15 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.continuations.either
 import arrow.core.none
+import arrow.core.toNonEmptyListOrNull
+import arrow.core.toOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import net.nns.keywd.core.fold
 import net.nns.keywd.model.Diary
+import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.model.repository.DiaryRepository
 import java.time.LocalDate
@@ -26,19 +28,17 @@ class AddDiaryViewModel @Inject constructor(
     private val _addResult: MutableStateFlow<AddResult> = MutableStateFlow(AddResult.Initial)
     val addResult: StateFlow<AddResult> = _addResult.asStateFlow()
 
-    fun addDiary(content: String) {
+    fun addDiary(keywords: List<Keyword>) {
         viewModelScope.launch {
-            // FIXME: Use LocalDate
             val result = either {
                 val title = Title.fromDate(LocalDate.now()).bind()
-                val notEmptyContent = content.isNotEmpty().fold(
-                    isTrue = { content },
-                    isFalse = { IllegalStateException("Content is empty") },
-                ).bind()
+                val nonEmptyKeywords = keywords.toNonEmptyListOrNull().toOption().bind {
+                    IllegalStateException("keyword is empty.")
+                }
                 val diary = Diary(
                     id = none(),
                     title = title,
-                    content = notEmptyContent,
+                    keywords = nonEmptyKeywords,
                 )
                 repository.addDiary(diary).bind()
             }

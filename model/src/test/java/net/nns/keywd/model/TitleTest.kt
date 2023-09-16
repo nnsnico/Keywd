@@ -3,18 +3,16 @@ package net.nns.keywd.model
 import arrow.core.Either
 import arrow.core.continuations.either
 import arrow.core.getOrElse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 @RunWith(JUnit4::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 class TitleTest {
     @Test
     fun fromDate_isSuccess_whenCorrectFormat() = runTest {
@@ -26,8 +24,8 @@ class TitleTest {
             "2023/06/04 00:15:30 UTC",
             DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss zzz"),
         )
-        val expectJST = Title.fromDate(Date.from(zoneJST.toInstant())).getOrElse { null }
-        val expectUTC = Title.fromDate(Date.from(zoneUTC.toInstant())).getOrElse { null }
+        val expectJST = Title.fromDate(LocalDate.from(zoneJST)).getOrElse { null }
+        val expectUTC = Title.fromDate(LocalDate.from(zoneUTC)).getOrElse { null }
 
         Assert.assertEquals(expectJST?.value, "2023-06-04")
         Assert.assertEquals(expectUTC?.value, "2023-06-04")
@@ -44,7 +42,7 @@ class TitleTest {
 
         val expect = either {
             val instant = invalidDateFormat.map { it.toInstant() }.bind()
-            Title.fromDate(Date.from(instant)).bind()
+            Title.fromDate(LocalDate.from(instant)).bind()
         }.getOrElse { null }
 
         Assert.assertEquals(expect?.value, null)
