@@ -15,21 +15,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,7 +48,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -67,6 +61,7 @@ import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
+import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
 import java.util.UUID
@@ -253,41 +248,6 @@ fun DiaryMemoryEditor(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun KeywordChip(
-    keyword: Keyword,
-    onChipClosed: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    InputChip(
-        modifier = modifier.padding(horizontal = 4.dp),
-        shape = Shapes.extraLarge,
-        label = {
-            Text(
-                text = keyword.value.value.trim(),
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-        },
-        onClick = { onChipClosed(keyword.id) },
-        selected = true,
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                modifier = Modifier
-                    .width(16.dp)
-                    .height(16.dp)
-                    .clip(Shapes.extraLarge)
-                    .clickable { onChipClosed(keyword.id) },
-                contentDescription = null,
-                tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
-            )
-        },
-    )
-}
-
 @Preview(showSystemUi = false)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
 @Composable
@@ -325,16 +285,6 @@ private fun AddDiaryPreviewWithoutChip() {
 private fun ConfirmDialogPreview() {
     KeywdTheme {
         ConfirmDialog {}
-    }
-}
-
-@Preview
-@Composable
-private fun KeywordChipPreview(
-    @PreviewParameter(ChipsProvider::class) chips: ImmutableList<Keyword>,
-) {
-    KeywdTheme {
-        KeywordChip(keyword = chips[0], onChipClosed = {})
     }
 }
 

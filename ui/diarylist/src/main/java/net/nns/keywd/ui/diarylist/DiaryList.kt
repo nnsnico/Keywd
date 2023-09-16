@@ -3,10 +3,13 @@ package net.nns.keywd.ui.diarylist
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,11 +27,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -46,6 +53,7 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.Screen
+import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
@@ -128,6 +136,7 @@ private fun DiaryListColumn(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ListItem(
     diary: Diary,
@@ -139,7 +148,11 @@ private fun ListItem(
             .padding(8.dp),
         shape = Shapes.extraLarge,
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+        ) {
             Text(
                 modifier = Modifier
                     .padding(top = 8.dp)
@@ -147,14 +160,13 @@ private fun ListItem(
                 text = diary.title.value.replace("-", "/"),
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             )
-            Text(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .padding(horizontal = 4.dp),
-                text = diary.keywords.joinToString { it.value.value },
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                diary.keywords.forEach {
+                    KeywordChip(keyword = it)
+                }
+            }
         }
     }
 }
@@ -205,6 +217,8 @@ private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>>
                             NonEmptyString.init("piyo"),
                             NonEmptyString.init("foo"),
                             NonEmptyString.init("bar"),
+                            NonEmptyString.init("baz"),
+                            NonEmptyString.init("baz"),
                             NonEmptyString.init("baz"),
                         ).sequence().bind()
                         Pair(title, keywords)
