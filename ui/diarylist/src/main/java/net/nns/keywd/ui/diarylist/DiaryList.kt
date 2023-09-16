@@ -168,7 +168,7 @@ private fun DiaryListLayoutPreview(
 ) {
     KeywdTheme {
         DiaryListLayout(
-            diaryList = diaries.toImmutableList(),
+            diaryList = diaries,
             onClickAddDiary = {},
         )
     }

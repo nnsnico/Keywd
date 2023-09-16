@@ -56,18 +56,20 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import arrow.core.traverse
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.runBlocking
 import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
-
-@Stable
-data class Chip(val id: Int, val text: String)
+import java.util.UUID
 
 @Composable
 fun AddDiary(
@@ -105,7 +107,7 @@ fun AddDiary(
                 { text },
                 { nes ->
                     if (nes.value.endsWithBlankOrEnter()) {
-                        chips = chips + Chip(chips.count() + 1, nes.value.trim())
+                        chips += Chip(UUID.randomUUID().toString(), nes)
                         ""
                     } else {
                         nes.value
@@ -141,7 +143,7 @@ private fun AddDiaryLayout(
     chips: ImmutableList<Chip>,
     onConfirmDiary: () -> Unit,
     onChangedText: (String) -> Unit,
-    onChipClose: (Int) -> Unit,
+    onChipClose: (String) -> Unit,
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
@@ -179,7 +181,7 @@ private fun AddDiaryLayout(
             DiaryMemoryEditor(
                 chips = chips,
                 onChangedText = onChangedText,
-                onChipClose = onChipClose,
+                onChipClosed = onChipClose,
                 textFieldContent = textFieldContent,
             )
         }
@@ -191,7 +193,7 @@ private fun AddDiaryLayout(
 fun DiaryMemoryEditor(
     chips: ImmutableList<Chip>,
     onChangedText: (String) -> Unit,
-    onChipClose: (Int) -> Unit,
+    onChipClosed: (String) -> Unit,
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
@@ -229,7 +231,7 @@ fun DiaryMemoryEditor(
             }
 
             chips.forEach {
-                KeywordChip(id = it.id, text = it.text, onChipClick = onChipClose)
+                KeywordChip(chip = it, onChipClosed = onChipClosed)
             }
 
             BasicTextField(
@@ -254,9 +256,8 @@ fun DiaryMemoryEditor(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeywordChip(
-    id: Int,
-    text: String,
-    onChipClick: (Int) -> Unit,
+    chip: Chip,
+    onChipClosed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     InputChip(
@@ -264,13 +265,13 @@ fun KeywordChip(
         shape = Shapes.extraLarge,
         label = {
             Text(
-                text = text,
+                text = chip.text.value.trim(),
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
         },
-        onClick = { onChipClick(id) },
+        onClick = { onChipClosed(chip.id) },
         selected = true,
         trailingIcon = {
             Icon(
@@ -279,7 +280,7 @@ fun KeywordChip(
                     .width(16.dp)
                     .height(16.dp)
                     .clip(Shapes.extraLarge)
-                    .clickable { onChipClick(id) },
+                    .clickable { onChipClosed(chip.id) },
                 contentDescription = null,
                 tint = contentColorFor(backgroundColor = MaterialTheme.colorScheme.tertiaryContainer),
             )
@@ -290,15 +291,12 @@ fun KeywordChip(
 @Preview(showSystemUi = false)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
 @Composable
-private fun AddDiaryPreview() {
+private fun AddDiaryPreview(
+    @PreviewParameter(ChipsProvider::class) chips: ImmutableList<Chip>,
+) {
     KeywdTheme {
         AddDiaryLayout(
-            chips = listOf(
-                Chip(1, "hoge"),
-                Chip(2, "fuga"),
-                Chip(3, "piyo"),
-                Chip(4, "foo"),
-            ).toImmutableList(),
+            chips = chips,
             onConfirmDiary = {},
             onChangedText = {},
             onChipClose = {},
@@ -332,8 +330,33 @@ private fun ConfirmDialogPreview() {
 
 @Preview
 @Composable
-fun KeywordChipPreview() {
+private fun KeywordChipPreview(
+    @PreviewParameter(ChipsProvider::class) chips: ImmutableList<Chip>,
+) {
     KeywdTheme {
-        KeywordChip(id = 1, text = "hoge", onChipClick = {})
+        KeywordChip(chip = chips[0], onChipClosed = {})
     }
+}
+
+@Stable
+data class Chip(val id: String, val text: NonEmptyString)
+
+private class ChipsProvider : PreviewParameterProvider<ImmutableList<Chip>> {
+    override val values: Sequence<ImmutableList<Chip>>
+        get() = runBlocking {
+            sequenceOf(
+                listOf(
+                    NonEmptyString.init("hoge"),
+                    NonEmptyString.init("fuga"),
+                    NonEmptyString.init("piyo"),
+                    NonEmptyString.init("foo"),
+                    NonEmptyString.init("bar"),
+                    NonEmptyString.init("baz"),
+                ).traverse {
+                    it.orNull()
+                }?.mapIndexed { index, nes ->
+                    Chip(index.toString(), nes)
+                }.orEmpty().toImmutableList(),
+            )
+        }
 }
