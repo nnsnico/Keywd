@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
@@ -23,7 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -133,6 +134,7 @@ private fun ConfirmDialog(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AddDiaryLayout(
     keywords: ImmutableList<Keyword>,
@@ -145,9 +147,16 @@ private fun AddDiaryLayout(
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            FloatingActionButton(onClick = onConfirmDiary) {
-                Icon(Icons.Filled.Add, contentDescription = "Confirm a diary")
-            }
+            ExtendedFloatingActionButton(
+                expanded = !WindowInsets.isImeVisible,
+                onClick = onConfirmDiary,
+                icon = {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                },
+                text = {
+                    Text(text = "日記を追加")
+                },
+            )
         },
         topBar = {
             Column(
@@ -159,7 +168,7 @@ private fun AddDiaryLayout(
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Text(
-                    text = "思い出せるキーワードを入力してみましょう",
+                    text = "思い出せるキーワードを入力してみましょう\nスペースでキーワードが作成されます。",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -219,7 +228,7 @@ fun DiaryMemoryEditor(
                 )
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(horizontal = 8.dp),
+                .padding(8.dp),
         ) {
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
@@ -233,7 +242,7 @@ fun DiaryMemoryEditor(
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .widthIn(min = 80.dp)
-                    .padding(horizontal = 4.dp, vertical = 16.dp)
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
                     .align(Alignment.CenterVertically),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = FontFamily.Default,

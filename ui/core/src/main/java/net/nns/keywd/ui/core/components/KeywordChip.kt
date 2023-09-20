@@ -1,9 +1,11 @@
 package net.nns.keywd.ui.core.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +34,16 @@ fun KeywordChip(
     onChipClosed: ((String) -> Unit)? = null,
 ) {
     InputChip(
-        modifier = modifier.padding(horizontal = 4.dp),
+        modifier = modifier
+            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .selectable(
+                enabled = false,
+                selected = false,
+                interactionSource = remember {
+                    MutableInteractionSource()
+                },
+                indication = null,
+            ) {},
         shape = Shapes.extraLarge,
         label = {
             Text(
@@ -43,8 +55,8 @@ fun KeywordChip(
         },
         onClick = { onChipClosed?.invoke(keyword.id) },
         selected = true,
-        trailingIcon = {
-            onChipClosed?.let {
+        trailingIcon = onChipClosed?.let {
+            {
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     modifier = Modifier
@@ -69,7 +81,7 @@ private fun KeywordChipPreview() {
                 id = "1",
                 value = NonEmptyString.init("hoge").orNull()!!,
             ),
-            onChipClosed = {}
+            onChipClosed = {},
         )
     }
 }
