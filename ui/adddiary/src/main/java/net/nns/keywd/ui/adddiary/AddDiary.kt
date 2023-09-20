@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
@@ -160,7 +162,9 @@ private fun AddDiaryLayout(
         },
         topBar = {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             ) {
                 Spacer(modifier = Modifier.heightIn(min = 96.dp))
                 Text(
@@ -168,7 +172,7 @@ private fun AddDiaryLayout(
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Text(
-                    text = "思い出せるキーワードを入力してみましょう\nスペースでキーワードが作成されます。",
+                    text = "思い出せるキーワードを入力してみましょう。\nスペースキーでキーワードが作成されます。",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -178,10 +182,10 @@ private fun AddDiaryLayout(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .padding(it),
         ) {
-            Spacer(modifier = Modifier.heightIn(min = 16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             DiaryMemoryEditor(
                 chips = keywords,
                 onChangedText = onChangedText,

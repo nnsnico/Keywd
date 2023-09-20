@@ -2,6 +2,7 @@ package net.nns.keywd.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -16,6 +17,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.Tab
+import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
 @Composable
@@ -70,6 +72,7 @@ private fun HomeLayout(
                 )
             }
         },
+        contentWindowInsets = WindowInsets.zero(),
     ) {
         content(it)
     }
