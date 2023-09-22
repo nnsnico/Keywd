@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed interface Tab {
-    val name: String
+    val displayName: String
     val route: String
     val icon: ImageVector
 }
@@ -15,7 +15,7 @@ sealed interface HasNestedNavigation {
     val routePattern: String
 }
 
-sealed class Screen(val name: String, val route: String) {
+sealed class Screen(val displayName: String, val route: String) {
     object Home : Screen("Home", "home") {
         val tabs = listOf<Tab>(DiaryList, Calendar)
     }

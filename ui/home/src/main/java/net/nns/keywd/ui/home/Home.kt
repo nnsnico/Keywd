@@ -100,7 +100,7 @@ private fun HomeLayout(
                     Screen.Home.tabs.forEachIndexed { index, tab ->
                         Tab(
                             text = {
-                                Text(text = tab.name)
+                                Text(text = tab.displayName)
                             },
                             icon = {
                                 Icon(imageVector = tab.icon, contentDescription = null)
