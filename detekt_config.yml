@@ -12,6 +12,9 @@ naming:
     constantPattern: '[A-Z][A-Za-z0-9]*'
 
 complexity:
+  LongMethod:
+    ignoreAnnotated:
+      - 'Composable'
   LongParameterList:
     ignoreDefaultParameters: true
   NamedArguments:
