@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import net.nns.keywd.ui.adddiary.addDiaryGraph
 import net.nns.keywd.ui.adddiary.navigateAddDiary
-import net.nns.keywd.ui.calendar.calendarGraph
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.diarylist.diaryListGraph
 
@@ -28,9 +27,8 @@ fun AppNavigation(
                     appState.saveAddDiaryResult(true)
                     navController.popBackStack()
                 },
-                onCloseScreen = navController::popBackStack
+                onCloseScreen = navController::popBackStack,
             )
         }
-        calendarGraph()
     }
 }

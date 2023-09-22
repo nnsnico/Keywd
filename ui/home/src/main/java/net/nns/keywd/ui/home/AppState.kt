@@ -31,13 +31,13 @@ class AppState(
     val navController: NavHostController,
 ) {
     private val bottomBarTabs = Screen.Home.tabs
-    private val bottomBarRoutes = bottomBarTabs.map { it.route }
+    private val tabBarRoutes = bottomBarTabs.map { it.route }
 
-    val currentDestination: NavDestination?
+    private val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
-    val shouldShowBottomBar: Boolean
-        @Composable get() = currentDestination?.route in bottomBarRoutes
+    val shouldShowTabItems: Boolean
+        @Composable get() = currentDestination?.route in tabBarRoutes
 
     fun saveAddDiaryResult(value: Boolean) {
         navController.previousBackStackEntry?.savedStateHandle?.set(

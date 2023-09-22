@@ -1,22 +1,32 @@
 package net.nns.keywd.ui.home
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import kotlinx.coroutines.launch
+import net.nns.keywd.ui.calendar.Calendar
 import net.nns.keywd.ui.core.Screen
-import net.nns.keywd.ui.core.Tab
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
-import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
 @Composable
@@ -25,14 +35,11 @@ fun Home(
     appState: AppState = rememberAppState(),
 ) {
     HomeLayout(
-        currentDestination = appState.currentDestination,
-        onSelectTab = appState::navigateToBottomBar,
-        shouldShowBottomBar = appState.shouldShowBottomBar,
+        shouldShowTab = appState.shouldShowTabItems,
         modifier = modifier,
     ) {
         AppNavigation(
             appState = appState,
-            modifier = Modifier.padding(it),
         )
     }
 }
@@ -42,60 +49,84 @@ fun Home(
 private fun HomeLayoutPreviews() {
     KeywdTheme {
         HomeLayout(
-            currentDestination = null,
-            shouldShowBottomBar = true,
-            onSelectTab = {},
+            shouldShowTab = true,
         ) {
             Text(text = "This is preview")
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeLayout(
-    currentDestination: NavDestination?,
-    shouldShowBottomBar: Boolean,
-    onSelectTab: (Tab) -> Unit,
+    shouldShowTab: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable () -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            if (shouldShowBottomBar) {
-                HomeTabNavigation(
-                    currentDestination = currentDestination,
-                    onSelectTab = onSelectTab,
-                    modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            if (shouldShowTab) {
+                TopAppBar(
+                    title = {
+                        Text(text = "Keywd")
+                    },
+                    scrollBehavior = scrollBehavior,
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    ),
                 )
             }
         },
-        contentWindowInsets = WindowInsets.zero(),
-    ) {
-        content(it)
-    }
-}
-
-@Composable
-private fun HomeTabNavigation(
-    currentDestination: NavDestination?,
-    onSelectTab: (Tab) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NavigationBar(
-        modifier = modifier,
-    ) {
-        Screen.Home.tabs.forEach { tab ->
-            NavigationBarItem(
-                icon = { Icon(tab.icon, contentDescription = null) },
-                label = { Text(text = tab.name) },
-                selected = currentDestination.isTabDestinationInHierarchy(tab),
-                onClick = { onSelectTab(tab) },
-            )
+        contentWindowInsets = WindowInsets.safeDrawing,
+    ) { padding ->
+        if (shouldShowTab) {
+            Column(modifier = Modifier.padding(padding)) {
+                TabRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    selectedTabIndex = pagerState.currentPage,
+                    indicator = { tabPositions ->
+                        TabIndicator(
+                            modifier = Modifier.tabIndicatorOffset(
+                                tabPositions[pagerState.currentPage],
+                            ),
+                        )
+                    },
+                ) {
+                    Screen.Home.tabs.forEachIndexed { index, tab ->
+                        Tab(
+                            text = {
+                                Text(text = tab.name)
+                            },
+                            icon = {
+                                Icon(imageVector = tab.icon, contentDescription = null)
+                            },
+                            selected = pagerState.currentPage == index,
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.scrollToPage(page = index)
+                                }
+                            },
+                        )
+                    }
+                }
+                HorizontalPager(
+                    pageCount = Screen.Home.tabs.size,
+                    state = pagerState,
+                ) { index ->
+                    when (index) {
+                        0 -> content()
+                        1 -> Calendar()
+                    }
+                }
+            }
+        } else {
+            content()
         }
     }
 }
-
-private fun NavDestination?.isTabDestinationInHierarchy(tab: Tab): Boolean = this?.hierarchy?.any {
-    it.route == tab.route
-} ?: false
