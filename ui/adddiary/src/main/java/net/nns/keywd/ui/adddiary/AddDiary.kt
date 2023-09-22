@@ -1,7 +1,6 @@
 package net.nns.keywd.ui.adddiary
 
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -26,8 +24,10 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -136,7 +137,7 @@ private fun ConfirmDialog(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDiaryLayout(
     keywords: ImmutableList<Keyword>,
@@ -161,37 +162,34 @@ private fun AddDiaryLayout(
             )
         },
         topBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            ) {
-                Spacer(modifier = Modifier.heightIn(min = 96.dp))
-                Text(
-                    text = "夢の中の出来事は\n何でしたか？",
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-                Text(
-                    text = "思い出せるキーワードを入力してみましょう。\nスペースキーでキーワードが作成されます。",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
+            LargeTopAppBar(
+                title = {
+                    Text(text = "夢の中の出来事は\n何でしたか？")
+                },
+            )
         },
         contentWindowInsets = WindowInsets.safeDrawing,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            DiaryMemoryEditor(
-                chips = keywords,
-                onChangedText = onChangedText,
-                onChipClosed = onChipClose,
-                textFieldContent = textFieldContent,
-            )
+        Box(modifier = Modifier.padding(it)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "思い出せる出来事を単語で入力してみましょう。\nスペースキーでキーワードが作成されます。",
+                    textAlign = TextAlign.Start,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                DiaryMemoryEditor(
+                    chips = keywords,
+                    onChangedText = onChangedText,
+                    onChipClosed = onChipClose,
+                    textFieldContent = textFieldContent,
+                )
+            }
         }
     }
 }
@@ -208,8 +206,7 @@ fun DiaryMemoryEditor(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(8.dp),
+            .fillMaxHeight(),
     ) {
         val focusRequester = remember { FocusRequester() }
         val keyboardController = LocalSoftwareKeyboardController.current
