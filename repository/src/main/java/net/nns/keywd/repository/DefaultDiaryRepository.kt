@@ -2,7 +2,7 @@ package net.nns.keywd.repository
 
 import arrow.core.Either
 import arrow.core.continuations.either
-import net.nns.keywd.core.traverse
+import net.nns.keywd.core.ext.traverse
 import net.nns.keywd.datasource.dao.DiaryDao
 import net.nns.keywd.datasource.dao.DiaryKeywordDao
 import net.nns.keywd.datasource.dto.DiaryEntity

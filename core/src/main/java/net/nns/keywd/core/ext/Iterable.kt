@@ -1,4 +1,4 @@
-package net.nns.keywd.core
+package net.nns.keywd.core.ext
 
 import arrow.core.Either
 import arrow.core.identity

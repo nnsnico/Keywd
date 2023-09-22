@@ -11,7 +11,7 @@ import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.toNonEmptyListOrNull
 import arrow.core.toOption
-import net.nns.keywd.core.NonEmptyList.traverse
+import net.nns.keywd.core.ext.NonEmptyList.traverse
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
 

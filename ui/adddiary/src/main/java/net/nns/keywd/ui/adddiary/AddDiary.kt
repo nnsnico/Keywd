@@ -66,7 +66,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.core.NonEmptyString
-import net.nns.keywd.core.endsWithBlankOrEnter
+import net.nns.keywd.core.ext.endsWithBlankOrEnter
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
