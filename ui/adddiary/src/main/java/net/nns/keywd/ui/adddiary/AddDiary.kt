@@ -158,7 +158,7 @@ private fun AddDiaryLayout(
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val imePadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding().value
 
     LaunchedEffect(imePadding) {
