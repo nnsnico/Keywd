@@ -1,6 +1,5 @@
 package net.nns.keywd.ui.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +11,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.Tab
+import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
@@ -38,8 +37,7 @@ fun Home(
     }
 }
 
-@Preview
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreviews
 @Composable
 private fun HomeLayoutPreviews() {
     KeywdTheme {

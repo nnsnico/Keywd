@@ -29,7 +29,9 @@ style:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
   UnusedPrivateMember:
-    ignoreAnnotated: [ 'Preview' ]
+    ignoreAnnotated:
+      - '*Preview'
+      - '*Previews'
   CascadingCallWrapping:
     active: true
 

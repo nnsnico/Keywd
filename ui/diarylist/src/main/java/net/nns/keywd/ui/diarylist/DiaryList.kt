@@ -1,6 +1,5 @@
 package net.nns.keywd.ui.diarylist
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -29,7 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -49,6 +47,7 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.Screen
+import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
@@ -175,8 +174,7 @@ internal fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(text = "Hello $name!", modifier = modifier.padding(8.dp))
 }
 
-@Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreviews
 @Composable
 private fun DiaryListLayoutPreview(
     @PreviewParameter(DiaryListProvider::class) diaries: ImmutableList<Diary>,
@@ -186,15 +184,6 @@ private fun DiaryListLayoutPreview(
             diaryList = diaries,
             onClickAddDiary = {},
         )
-    }
-}
-
-@Preview(showSystemUi = false)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun DiaryListLayoutWhenEmptyPreview() {
-    KeywdTheme {
-        DiaryListLayout(diaryList = emptyList<Diary>().toImmutableList()) {}
     }
 }
 
@@ -229,6 +218,7 @@ private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>>
                         keywords = nesList.map { Keyword(id = "1", value = it) },
                     )
                 }.orEmpty().toImmutableList(),
+                emptyList<Diary>().toImmutableList(),
             )
         }
 }

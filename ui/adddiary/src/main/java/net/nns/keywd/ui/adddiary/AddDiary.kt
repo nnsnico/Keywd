@@ -65,6 +65,7 @@ import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.endsWithBlankOrEnter
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
+import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
@@ -261,8 +262,7 @@ fun DiaryMemoryEditor(
     }
 }
 
-@Preview(showSystemUi = false)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
+@MultiThemePreviews
 @Composable
 private fun AddDiaryPreview(
     @PreviewParameter(ChipsProvider::class) chips: ImmutableList<Keyword>,
@@ -270,21 +270,6 @@ private fun AddDiaryPreview(
     KeywdTheme {
         AddDiaryLayout(
             keywords = chips,
-            onConfirmDiary = {},
-            onChangedText = {},
-            onChipClose = {},
-            textFieldContent = "hoge",
-        )
-    }
-}
-
-@Preview(showSystemUi = false)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = false)
-@Composable
-private fun AddDiaryPreviewWithoutChip() {
-    KeywdTheme {
-        AddDiaryLayout(
-            keywords = emptyList<Keyword>().toImmutableList(),
             onConfirmDiary = {},
             onChangedText = {},
             onChipClose = {},
@@ -305,6 +290,7 @@ private class ChipsProvider : PreviewParameterProvider<ImmutableList<Keyword>> {
     override val values: Sequence<ImmutableList<Keyword>>
         get() = runBlocking {
             sequenceOf(
+                // 1. fill keywords
                 listOf(
                     NonEmptyString.init("hoge"),
                     NonEmptyString.init("fuga"),
@@ -317,6 +303,8 @@ private class ChipsProvider : PreviewParameterProvider<ImmutableList<Keyword>> {
                 }?.mapIndexed { index, nes ->
                     Keyword(index.toString(), nes)
                 }.orEmpty().toImmutableList(),
+                // 2. empty keyword
+                emptyList<Keyword>().toImmutableList(),
             )
         }
 }
