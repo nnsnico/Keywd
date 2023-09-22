@@ -70,6 +70,8 @@ import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
 import java.util.UUID
 
+private const val LineHeightPercentage = 1.5
+
 @Composable
 fun AddDiary(
     modifier: Modifier = Modifier,
@@ -248,6 +250,7 @@ fun DiaryMemoryEditor(
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = FontFamily.Default,
                     color = contentColorFor(MaterialTheme.colorScheme.background),
+                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * LineHeightPercentage,
                 ),
                 singleLine = true,
                 value = textFieldContent,
