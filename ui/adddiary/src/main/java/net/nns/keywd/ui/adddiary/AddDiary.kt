@@ -182,7 +182,7 @@ private fun AddDiaryLayout(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(text = "夢の中の出来事は\n何でしたか？")
+                    Text(text = "夢の中の出来事は\n何でしたか?")
                 },
                 navigationIcon = {
                     IconButton(
