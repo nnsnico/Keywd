@@ -27,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -95,7 +94,7 @@ fun DiaryListLayout(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(text = "夢日記")
+                    Text(text = "Keywd")
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -156,7 +155,7 @@ private fun ListItem(
                     .padding(top = 8.dp)
                     .padding(horizontal = 4.dp),
                 text = diary.title.value.replace("-", "/"),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.headlineSmall,
             )
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
