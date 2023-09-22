@@ -28,6 +28,7 @@ fun AppNavigation(
                     appState.saveAddDiaryResult(true)
                     navController.popBackStack()
                 },
+                onCloseScreen = navController::popBackStack
             )
         }
         calendarGraph()

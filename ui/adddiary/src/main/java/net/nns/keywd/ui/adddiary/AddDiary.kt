@@ -23,16 +23,20 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -75,10 +79,11 @@ private const val LineHeightPercentage = 1.5
 
 @Composable
 fun AddDiary(
+    onCloseScreen: () -> Unit,
+    onConfirmDiary: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddDiaryViewModel = hiltViewModel(),
     context: Context = LocalContext.current,
-    onConfirmDiary: () -> Unit,
 ) {
     var textFieldContent by rememberSaveable { mutableStateOf("") }
     var keywords by rememberSaveable { mutableStateOf(emptyList<Keyword>()) }
@@ -103,6 +108,7 @@ fun AddDiary(
         onConfirmDiary = {
             viewModel.addDiary(keywords)
         },
+        onCloseScreen = onCloseScreen,
         onChangedText = { text ->
             val nonEmptyString = NonEmptyString.init(text)
             textFieldContent = nonEmptyString.fold(
@@ -144,12 +150,15 @@ private fun ConfirmDialog(
 @Composable
 private fun AddDiaryLayout(
     keywords: ImmutableList<Keyword>,
+    onCloseScreen: () -> Unit,
     onConfirmDiary: () -> Unit,
     onChangedText: (String) -> Unit,
     onChipClose: (String) -> Unit,
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -169,6 +178,17 @@ private fun AddDiaryLayout(
                 title = {
                     Text(text = "夢の中の出来事は\n何でしたか？")
                 },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onCloseScreen,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
             )
         },
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -270,6 +290,7 @@ private fun AddDiaryPreview(
     KeywdTheme {
         AddDiaryLayout(
             keywords = chips,
+            onCloseScreen = {},
             onConfirmDiary = {},
             onChangedText = {},
             onChipClose = {},

@@ -11,10 +11,14 @@ fun NavController.navigateAddDiary() {
     }
 }
 
-fun NavGraphBuilder.addDiaryGraph(onConfirmDialog: () -> Unit) {
+fun NavGraphBuilder.addDiaryGraph(
+    onConfirmDialog: () -> Unit,
+    onCloseScreen: () -> Unit,
+) {
     composable(route = Screen.AddDiary.route) {
         AddDiary(
             onConfirmDiary = onConfirmDialog,
+            onCloseScreen = onCloseScreen,
         )
     }
 }
