@@ -21,6 +21,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -38,6 +40,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.toVersion(versions.compileJvm.get())
         targetCompatibility = JavaVersion.toVersion(versions.compileJvm.get())
     }
@@ -72,6 +75,8 @@ hilt {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
     implementation(project(":datasource"))
     implementation(project(":repository"))
     implementation(project(":model"))
