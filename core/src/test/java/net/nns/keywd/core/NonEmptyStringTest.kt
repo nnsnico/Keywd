@@ -15,7 +15,6 @@ class NonEmptyStringTest {
         Assert.assertEquals(value.isNotEmpty(), true)
     }
 
-
     @Test
     fun init_isNone_whenValueIsEmpty() {
         val value = NonEmptyString.init("")

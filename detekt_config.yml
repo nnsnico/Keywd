@@ -1,8 +1,8 @@
 config:
-  warningsAsErrors: true
+  warningsAsErrors: false
 
-output-reports: # TODO: report from CI
-  active: false
+output-reports:
+  active: true
 
 # minimum rules for jetpack compose
 naming:
@@ -19,7 +19,7 @@ complexity:
     ignoreDefaultParameters: true
   NamedArguments:
     active: true
-    threshold: 2
+    threshold: 1
 
 performance:
   SpreadOperator:
