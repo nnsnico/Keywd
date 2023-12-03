@@ -249,7 +249,11 @@ fun DiaryMemoryEditor(
                     },
                     indication = null,
                 ) {
-                    keyboardController?.show()
+                    if (!focusRequester.captureFocus()) {
+                        focusRequester.requestFocus()
+                    } else {
+                        keyboardController?.show()
+                    }
                 }
                 .border(
                     width = 1.dp,
@@ -260,10 +264,6 @@ fun DiaryMemoryEditor(
                 .fillMaxHeight()
                 .padding(8.dp),
         ) {
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-            }
-
             chips.forEach {
                 KeywordChip(keyword = it, onChipClosed = onChipClosed)
             }
