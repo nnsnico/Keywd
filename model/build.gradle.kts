@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.ksp)
     alias(libs.plugins.kotlin.parcelize)
 }
 
@@ -48,8 +47,6 @@ dependencies {
     platform(libs.arrow.kt.arrow.stack)
     implementation(libs.arrow.kt.arrow.core)
     implementation(libs.androidx.room.runtime)
-
-    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.junit)

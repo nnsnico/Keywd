@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.theme.KeywdTheme
 
+// TODO: material3 ライブラリが対応したら移行する
 @Composable
 fun TabIndicator(
     modifier: Modifier = Modifier,

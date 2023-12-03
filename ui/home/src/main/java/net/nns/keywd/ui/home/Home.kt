@@ -35,8 +35,8 @@ fun Home(
     appState: AppState = rememberAppState(),
 ) {
     HomeLayout(
-        shouldShowTab = appState.shouldShowTabItems,
-        modifier = modifier,
+        appState.shouldShowTabItems,
+        modifier,
     ) {
         AppNavigation(
             appState = appState,
@@ -64,7 +64,10 @@ private fun HomeLayout(
     content: @Composable () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { Screen.Home.tabs.size },
+    )
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -90,6 +93,7 @@ private fun HomeLayout(
                     modifier = Modifier.fillMaxWidth(),
                     selectedTabIndex = pagerState.currentPage,
                     indicator = { tabPositions ->
+                        // TODO: material3 ライブラリが対応したら移行する
                         TabIndicator(
                             modifier = Modifier.tabIndicatorOffset(
                                 tabPositions[pagerState.currentPage],
@@ -115,10 +119,7 @@ private fun HomeLayout(
                         )
                     }
                 }
-                HorizontalPager(
-                    pageCount = Screen.Home.tabs.size,
-                    state = pagerState,
-                ) { index ->
+                HorizontalPager(state = pagerState) { index ->
                     when (index) {
                         0 -> content()
                         1 -> Calendar()

@@ -13,6 +13,7 @@ import net.nns.keywd.datasource.dto.DiaryKeywordEntity
         DiaryKeywordEntity::class,
     ],
     version = 2,
+    exportSchema = false,
 )
 abstract class DiaryDatabase : RoomDatabase() {
     abstract fun diaryDao(): DiaryDao
