@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -44,6 +46,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -232,59 +235,62 @@ fun DiaryMemoryEditor(
     modifier: Modifier = Modifier,
     textFieldContent: String = "",
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-    ) {
-        val focusRequester = remember { FocusRequester() }
-        val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberScrollState()
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val isImeVisible by rememberUpdatedState(WindowInsets.isImeVisible)
 
-        FlowRow(
-            modifier = Modifier
-                .clip(Shapes.extraLarge)
-                .clickable(
-                    interactionSource = remember {
-                        MutableInteractionSource()
-                    },
-                    indication = null,
-                ) {
-                    if (!focusRequester.captureFocus()) {
-                        focusRequester.requestFocus()
-                    } else {
-                        keyboardController?.show()
-                    }
-                }
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = Shapes.extraLarge,
-                )
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(8.dp),
-        ) {
-            chips.forEach {
-                KeywordChip(keyword = it, onChipClosed = onChipClosed)
-            }
-
-            BasicTextField(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .widthIn(min = 80.dp)
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .align(Alignment.CenterVertically),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = FontFamily.Default,
-                    color = contentColorFor(MaterialTheme.colorScheme.background),
-                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * LineHeightPercentage,
-                ),
-                singleLine = true,
-                value = textFieldContent,
-                cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
-                onValueChange = { text -> onChangedText(text) },
-            )
+    LaunchedEffect(key1 = chips, key2 = isImeVisible) {
+        if (isImeVisible && scrollState.canScrollForward) {
+            scrollState.animateScrollTo(scrollState.maxValue)
         }
+    }
+
+    FlowRow(
+        modifier = modifier
+            .clip(Shapes.extraLarge)
+            .clickable(
+                interactionSource = remember {
+                    MutableInteractionSource()
+                },
+                indication = null,
+            ) {
+                if (!focusRequester.captureFocus()) {
+                    focusRequester.requestFocus()
+                } else {
+                    keyboardController?.show()
+                }
+            }
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = Shapes.extraLarge,
+            )
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(scrollState)
+            .padding(8.dp),
+    ) {
+        chips.forEach {
+            KeywordChip(keyword = it, onChipClosed = onChipClosed)
+        }
+
+        BasicTextField(
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .widthIn(min = 80.dp)
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .align(Alignment.CenterVertically),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontFamily = FontFamily.Default,
+                color = contentColorFor(MaterialTheme.colorScheme.background),
+                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * LineHeightPercentage,
+            ),
+            singleLine = true,
+            value = textFieldContent,
+            cursorBrush = SolidColor(contentColorFor(backgroundColor = MaterialTheme.colorScheme.background)),
+            onValueChange = { text -> onChangedText(text) },
+        )
     }
 }
 
