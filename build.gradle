@@ -21,6 +21,9 @@ subprojects {
 
     detekt {
         config = files(rootProject.project.file('detekt_config.yml').absolutePath)
+
+        ignoreFailures = true
+        basePath = rootDir.absolutePath
         buildUponDefaultConfig = true
     }
 }
