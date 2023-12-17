@@ -1,21 +1,16 @@
 package net.nns.keywd.ui.diarylist
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoteAdd
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,20 +27,18 @@ import arrow.core.getOrElse
 import arrow.core.nonEmptyListOf
 import arrow.core.sequence
 import arrow.core.some
-import arrow.core.traverse
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.core.NonEmptyString
+import net.nns.keywd.core.ext.traverse
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
-import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
-import net.nns.keywd.ui.core.theme.Shapes
 
 @Composable
 fun DiaryList(
@@ -112,42 +105,7 @@ private fun DiaryListColumn(
             items = diaryList,
             key = { it.id.getOrElse { -1 } },
         ) { diary ->
-            ListItem(diary)
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun ListItem(
-    diary: Diary,
-    modifier: Modifier = Modifier,
-) {
-    ElevatedCard(
-        modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        shape = Shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 4.dp),
-                text = diary.title.value.replace("-", "/"),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                diary.keywords.forEach {
-                    KeywordChip(keyword = it)
-                }
-            }
+            DiaryListItem(diary)
         }
     }
 }
