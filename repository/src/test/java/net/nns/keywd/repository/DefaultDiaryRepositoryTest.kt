@@ -40,7 +40,7 @@ class DefaultDiaryRepositoryTest {
         get() = run {
             val diaryEntity = DiaryEntity(
                 id = 1,
-                title = "2023-01-01",
+                title = "2023/01/01 00:00",
             )
             val keywordEntities = listOf(
                 DiaryKeywordEntity(

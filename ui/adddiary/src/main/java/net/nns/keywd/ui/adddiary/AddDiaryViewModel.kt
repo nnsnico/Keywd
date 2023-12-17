@@ -16,7 +16,7 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.model.repository.DiaryRepository
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class AddDiaryViewModel @Inject constructor(
     fun addDiary(keywords: List<Keyword>) {
         viewModelScope.launch {
             val result = either {
-                val title = Title.fromDate(LocalDate.now()).bind()
+                val title = Title.fromDate(LocalDateTime.now()).bind()
                 val nonEmptyKeywords = keywords.toNonEmptyList().bind {
                     IllegalStateException("keyword is empty.")
                 }

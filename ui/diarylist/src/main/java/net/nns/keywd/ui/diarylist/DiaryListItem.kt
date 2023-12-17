@@ -25,6 +25,7 @@ import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
+import java.time.LocalDateTime
 
 @Composable
 fun DiaryListItem(
@@ -46,9 +47,9 @@ fun DiaryListItem(
             Text(
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 8.dp)
-                    .padding(horizontal = 4.dp),
-                text = diary.title.value.replace("-", "/"),
-                style = MaterialTheme.typography.headlineSmall,
+                    .padding(horizontal = 8.dp),
+                text = diary.title.value,
+                style = MaterialTheme.typography.titleMedium,
             )
         }
     }
@@ -69,7 +70,7 @@ private class DiaryProvider : PreviewParameterProvider<Diary?> {
         get() = runBlocking {
             sequenceOf(
                 either {
-                    val title = Title.fromString("2023-06-01").bind()
+                    val title = Title.fromDate(LocalDateTime.now()).bind()
                     val keywords = nonEmptyListOf(
                         NonEmptyString.init("hoge"),
                         NonEmptyString.init("fuga"),

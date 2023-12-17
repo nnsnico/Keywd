@@ -8,7 +8,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -24,11 +24,11 @@ class TitleTest {
             "2023/06/04 00:15:30 UTC",
             DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss zzz"),
         )
-        val expectJST = Title.fromDate(LocalDate.from(zoneJST)).getOrElse { null }
-        val expectUTC = Title.fromDate(LocalDate.from(zoneUTC)).getOrElse { null }
+        val expectJST = Title.fromDate(LocalDateTime.from(zoneJST)).getOrElse { null }
+        val expectUTC = Title.fromDate(LocalDateTime.from(zoneUTC)).getOrElse { null }
 
-        Assert.assertEquals(expectJST?.value, "2023-06-04")
-        Assert.assertEquals(expectUTC?.value, "2023-06-04")
+        Assert.assertEquals(expectJST?.value, "2023/06/04 10:15")
+        Assert.assertEquals(expectUTC?.value, "2023/06/04 00:15")
     }
 
     @Test
@@ -42,7 +42,7 @@ class TitleTest {
 
         val expect = either {
             val instant = invalidDateFormat.map { it.toInstant() }.bind()
-            Title.fromDate(LocalDate.from(instant)).bind()
+            Title.fromDate(LocalDateTime.from(instant)).bind()
         }.getOrElse { null }
 
         Assert.assertEquals(expect?.value, null)
@@ -50,11 +50,11 @@ class TitleTest {
 
     @Test
     fun fromString_isSuccess_whenCorrectFormat() = runTest {
-        val dateFormat = "2023-06-04"
+        val dateFormat = "2023/06/04 00:00"
 
         val expect = Title.fromString(dateFormat).getOrElse { null }
 
-        Assert.assertEquals(expect?.value, dateFormat)
+        Assert.assertEquals(expect?.value, "2023/06/04 00:00")
     }
 
     @Test

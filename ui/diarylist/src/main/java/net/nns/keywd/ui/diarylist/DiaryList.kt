@@ -39,6 +39,7 @@ import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
+import java.time.LocalDateTime
 
 @Composable
 fun DiaryList(
@@ -133,10 +134,10 @@ private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>>
         get() = runBlocking {
             sequenceOf(
                 listOf(
-                    Title.fromString("2023-06-01"),
-                    Title.fromString("2023-06-02"),
-                    Title.fromString("2023-06-03"),
-                    Title.fromString("2023-06-04"),
+                    Title.fromString("2023/06/01 00:00"),
+                    Title.fromString("2023/06/02 00:00"),
+                    Title.fromString("2023/06/03 00:00"),
+                    Title.fromString("2023/06/04 00:00"),
                 ).traverse { titleOrErr ->
                     option {
                         val title = titleOrErr.orNone().bind()

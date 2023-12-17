@@ -1,17 +1,22 @@
 package net.nns.keywd.model
 
 import arrow.core.Either
-import arrow.core.Option
 import arrow.core.continuations.either
 import net.nns.keywd.core.NonEmptyString
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @JvmInline
 value class Title private constructor(val value: String) {
     companion object {
-        suspend fun fromDate(date: LocalDate): Either<Throwable, Title> = either {
-            val maybeDate = NonEmptyString.init(date.toString())
-            maybeDate.map {
+        private const val DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm"
+
+        suspend fun fromDate(date: LocalDateTime): Either<Throwable, Title> = either {
+            val formattedDate: String = Either.catch {
+                date.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT))
+            }.bind()
+
+            NonEmptyString.init(formattedDate).map {
                 Title(it.value)
             }.bind {
                 Exception("Title is empty")
@@ -19,10 +24,9 @@ value class Title private constructor(val value: String) {
         }
 
         suspend fun fromString(str: String): Either<Throwable, Title> = either {
-            val maybeDate = Either.catch { LocalDate.parse(str) }.bind()
-            val date = Option.fromNullable(maybeDate).bind {
-                Exception("Can't parse to Date")
-            }
+            val date: LocalDateTime = Either.catch {
+                LocalDateTime.parse(str, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT))
+            }.bind()
 
             fromDate(date).bind()
         }
