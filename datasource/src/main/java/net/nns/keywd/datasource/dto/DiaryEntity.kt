@@ -9,8 +9,7 @@ import arrow.core.Either
 import arrow.core.continuations.either
 import arrow.core.getOrElse
 import arrow.core.some
-import arrow.core.toNonEmptyListOrNull
-import arrow.core.toOption
+import net.nns.keywd.core.ext.NonEmptyList.toNonEmptyList
 import net.nns.keywd.core.ext.NonEmptyList.traverse
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Title
@@ -38,7 +37,7 @@ data class DiaryWithKeywordsEntity(
 ) {
     suspend fun toDiary(): Either<Throwable, Diary> = either {
         val title = Title.fromString(diary.title).bind()
-        val maybeKeywords = keywords.toNonEmptyListOrNull().toOption().bind {
+        val maybeKeywords = keywords.toNonEmptyList().bind {
             Exception("Keyword is empty.")
         }
         val keywords = maybeKeywords.traverse { it.toKeyword() }.bind {

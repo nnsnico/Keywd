@@ -5,6 +5,7 @@ import arrow.core.NonEmptyList
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.core.toNonEmptyListOrNull
 import kotlin.experimental.ExperimentalTypeInference
 
 object NonEmptyList {
@@ -35,4 +36,7 @@ object NonEmptyList {
             }
             NonEmptyList(newHead, acc)
         }
+
+    fun <A> Iterable<A>?.toNonEmptyList(): Option<NonEmptyList<A>> =
+        Option.fromNullable(this?.toNonEmptyListOrNull())
 }

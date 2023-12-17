@@ -6,13 +6,12 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.continuations.either
 import arrow.core.none
-import arrow.core.toNonEmptyListOrNull
-import arrow.core.toOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.nns.keywd.core.ext.NonEmptyList.toNonEmptyList
 import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
@@ -32,7 +31,7 @@ class AddDiaryViewModel @Inject constructor(
         viewModelScope.launch {
             val result = either {
                 val title = Title.fromDate(LocalDate.now()).bind()
-                val nonEmptyKeywords = keywords.toNonEmptyListOrNull().toOption().bind {
+                val nonEmptyKeywords = keywords.toNonEmptyList().bind {
                     IllegalStateException("keyword is empty.")
                 }
                 val diary = Diary(
