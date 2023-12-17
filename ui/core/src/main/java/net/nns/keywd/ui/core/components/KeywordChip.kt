@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.model.Keyword
+import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
 
@@ -69,7 +70,7 @@ fun KeywordChip(
     )
 }
 
-@Preview
+@MultiThemePreviews
 @Composable
 private fun KeywordChipPreview() {
     KeywdTheme {
@@ -83,7 +84,7 @@ private fun KeywordChipPreview() {
     }
 }
 
-@Preview
+@MultiThemePreviews
 @Composable
 private fun KeywordChipWithoutCallbackPreview() {
     KeywdTheme {
