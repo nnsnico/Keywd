@@ -1,8 +1,7 @@
 package net.nns.keywd.ui.diarylist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
@@ -10,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -18,7 +16,6 @@ import arrow.core.Option
 import arrow.core.continuations.either
 import arrow.core.nonEmptyListOf
 import arrow.core.some
-import arrow.core.toNonEmptyListOrNull
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.ext.NonEmptyList.traverse
@@ -26,41 +23,33 @@ import net.nns.keywd.model.Diary
 import net.nns.keywd.model.Keyword
 import net.nns.keywd.model.Title
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
-import net.nns.keywd.ui.core.components.KeywordChip
 import net.nns.keywd.ui.core.theme.KeywdTheme
 import net.nns.keywd.ui.core.theme.Shapes
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DiaryListItem(
     diary: Diary,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        modifier
+        shape = Shapes.extraLarge,
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
-        shape = Shapes.extraLarge,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { /* TODO */ }
                 .padding(8.dp),
         ) {
             Text(
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 8.dp, bottom = 8.dp)
                     .padding(horizontal = 4.dp),
                 text = diary.title.value.replace("-", "/"),
                 style = MaterialTheme.typography.headlineSmall,
             )
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                diary.keywords.forEach {
-                    KeywordChip(keyword = it)
-                }
-            }
         }
     }
 }
