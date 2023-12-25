@@ -60,18 +60,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import arrow.core.traverse
+import arrow.core.getOrElse
+import arrow.core.sequence
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
 import net.nns.keywd.core.NonEmptyString
 import net.nns.keywd.core.ext.endsWithBlankOrEnter
+import net.nns.keywd.core.ext.getOrEmpty
 import net.nns.keywd.model.Keyword
+import net.nns.keywd.model.preview.KeywordsFixture
 import net.nns.keywd.ui.adddiary.AddDiaryViewModel.AddResult
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.components.KeywordChip
@@ -311,7 +313,7 @@ private fun AddDiaryPreview(
     }
 }
 
-@Preview
+@MultiThemePreviews
 @Composable
 private fun ConfirmDialogPreview() {
     KeywdTheme {
@@ -324,18 +326,7 @@ private class ChipsProvider : PreviewParameterProvider<ImmutableList<Keyword>> {
         get() = runBlocking {
             sequenceOf(
                 // 1. fill keywords
-                listOf(
-                    NonEmptyString.init("hoge"),
-                    NonEmptyString.init("fuga"),
-                    NonEmptyString.init("piyo"),
-                    NonEmptyString.init("foo"),
-                    NonEmptyString.init("bar"),
-                    NonEmptyString.init("baz"),
-                ).traverse {
-                    it.orNull()
-                }?.mapIndexed { index, nes ->
-                    Keyword(index.toString(), nes)
-                }.orEmpty().toImmutableList(),
+                KeywordsFixture.create().getOrEmpty().toImmutableList(),
                 // 2. empty keyword
                 emptyList<Keyword>().toImmutableList(),
             )

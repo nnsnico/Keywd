@@ -22,24 +22,17 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
-import arrow.core.continuations.option
 import arrow.core.getOrElse
-import arrow.core.nonEmptyListOf
-import arrow.core.sequence
-import arrow.core.some
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.runBlocking
-import net.nns.keywd.core.NonEmptyString
-import net.nns.keywd.core.ext.traverse
+import net.nns.keywd.core.ext.getOrEmpty
 import net.nns.keywd.model.Diary
-import net.nns.keywd.model.Keyword
-import net.nns.keywd.model.Title
+import net.nns.keywd.model.preview.DiaryFixture
 import net.nns.keywd.ui.core.Screen
 import net.nns.keywd.ui.core.annotation.MultiThemePreviews
 import net.nns.keywd.ui.core.ext.zero
 import net.nns.keywd.ui.core.theme.KeywdTheme
-import java.time.LocalDateTime
 
 @Composable
 fun DiaryList(
@@ -133,33 +126,7 @@ private class DiaryListProvider : PreviewParameterProvider<ImmutableList<Diary>>
     override val values: Sequence<ImmutableList<Diary>>
         get() = runBlocking {
             sequenceOf(
-                listOf(
-                    Title.fromString("2023/06/01 00:00"),
-                    Title.fromString("2023/06/02 00:00"),
-                    Title.fromString("2023/06/03 00:00"),
-                    Title.fromString("2023/06/04 00:00"),
-                ).traverse { titleOrErr ->
-                    option {
-                        val title = titleOrErr.orNone().bind()
-                        val keywords = nonEmptyListOf(
-                            NonEmptyString.init("hoge"),
-                            NonEmptyString.init("fuga"),
-                            NonEmptyString.init("piyo"),
-                            NonEmptyString.init("foo"),
-                            NonEmptyString.init("bar"),
-                            NonEmptyString.init("baz"),
-                            NonEmptyString.init("baz"),
-                            NonEmptyString.init("baz"),
-                        ).sequence().bind()
-                        Pair(title, keywords)
-                    }.orNull()
-                }?.mapIndexed { i, (t, nesList) ->
-                    Diary(
-                        id = i.some(),
-                        title = t,
-                        keywords = nesList.map { Keyword(id = "1", value = it) },
-                    )
-                }.orEmpty().toImmutableList(),
+                DiaryFixture.create().getOrEmpty().toImmutableList(),
                 emptyList<Diary>().toImmutableList(),
             )
         }
