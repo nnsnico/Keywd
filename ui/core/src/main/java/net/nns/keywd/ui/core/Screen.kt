@@ -16,20 +16,20 @@ sealed interface HasNestedNavigation {
 }
 
 sealed class Screen(val displayName: String, val route: String) {
-    object Home : Screen("Home", "home") {
+    data object Home : Screen("Home", "home") {
         val tabs = listOf<Tab>(DiaryList, Calendar)
     }
 
-    object DiaryList : Screen("List", "list"), Tab, HasNestedNavigation {
+    data object DiaryList : Screen("List", "list"), Tab, HasNestedNavigation {
         override val icon: ImageVector = Icons.Filled.List
         override val routePattern: String = "list_graph"
     }
 
-    object Calendar : Screen("Calendar", "calender"), Tab {
+    data object Calendar : Screen("Calendar", "calender"), Tab {
         override val icon: ImageVector = Icons.Filled.CalendarViewMonth
     }
 
-    object AddDiary : Screen("Diary", "diary")
+    data object AddDiary : Screen("Diary", "diary")
 
     companion object {
         const val RESULT_KEY_IS_ADDED_DIARY: String = "is_added_diary"

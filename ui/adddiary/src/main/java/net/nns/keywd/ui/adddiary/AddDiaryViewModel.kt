@@ -62,8 +62,8 @@ class AddDiaryViewModel @Inject constructor(
     }
 
     sealed class AddResult {
-        object Initial : AddResult()
-        object Success : AddResult()
+        data object Initial : AddResult()
+        data object Success : AddResult()
 
         // need `key` to emit state with same message
         data class Error(val key: UUID, val message: String) : AddResult()
